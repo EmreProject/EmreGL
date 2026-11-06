@@ -1,0 +1,60 @@
+name: Build
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            toolchain: msvc
+          - os: windows-latest
+            toolchain: mingw
+          - os: ubuntu-latest
+            toolchain: gcc
+          - os: ubuntu-latest
+            toolchain: clang
+          - os: macos-latest
+            toolchain: appleclang
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up MSVC
+        if: matrix.toolchain == 'msvc'
+        uses: ilammy/msvc-dev-cmd@v1
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y ninja-build xorg-dev libgl1-mesa-dev
+      - name: Install macOS build tools
+        if: runner.os == 'macOS'
+        run: brew install ninja
+      - name: Select Clang
+        if: matrix.toolchain == 'clang'
+        shell: bash
+        run: |
+          echo "CC=clang" >> "$GITHUB_ENV"
+          echo "CXX=clang++" >> "$GITHUB_ENV"
+      - name: Set up MinGW
+        if: matrix.toolchain == 'mingw'
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-cmake mingw-w64-ucrt-x86_64-ninja
+      - name: Build and test (MinGW)
+        if: matrix.toolchain == 'mingw'
+        shell: msys2 {0}
+        run: |
+          cmake --preset debug
+          cmake --build --preset debug
+          ctest --preset debug
+      - name: Configure
+        if: matrix.toolchain != 'mingw'
+        run: cmake --preset debug
+      - name: Build
+        if: matrix.toolchain != 'mingw'
+        run: cmake --build --preset debug --parallel
+      - name: Test
+        if: matrix.toolchain != 'mingw'
+        run: ctest --preset debug

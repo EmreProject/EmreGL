@@ -2,6 +2,31 @@
   "version": 3,
   "configurePresets": [
     {
+      "name": "portable-base",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
+      "name": "debug",
+      "displayName": "Debug (system compiler)",
+      "inherits": "portable-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "release",
+      "displayName": "Release (system compiler)",
+      "inherits": "portable-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
       "name": "windows-base",
       "hidden": true,
       "generator": "Ninja",
@@ -56,6 +81,32 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
       }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "debug",
+      "configurePreset": "debug"
+    },
+    {
+      "name": "release",
+      "configurePreset": "release"
+    }
+  ],
+  "testPresets": [
+    {
+      "output": {
+        "outputOnFailure": true
+      },
+      "name": "debug",
+      "configurePreset": "debug"
+    },
+    {
+      "output": {
+        "outputOnFailure": true
+      },
+      "name": "release",
+      "configurePreset": "release"
     }
   ]
 }

@@ -2,51 +2,121 @@
 
 C++20 / CMake starter project with bundled GLFW and GLEW.
 
-## Layout
+## Requirements
 
-- `Renderer/include`, `Renderer/src`: public engine headers and implementation (`Engine`).
-- `Sandbox`: executable linked to the engine.
-- `Math/include`: existing math header; the module is an interface placeholder.
-- `GUI`: interface placeholder for future GUI sources.
-- `Assets`: runtime assets.
-- `External`: bundled GLFW and GLEW sources, including their licenses.
+A C++20 compiler (MSVC, GCC, Clang or Apple Clang), CMake 3.21+ and Ninja.
+Visual Studio's IDE is optional. GLFW and GLEW sources are included; no submodule
+or dependency download is needed. OpenGL development libraries are required.
 
-The math header is incomplete: `ogl_Vector.h`, `ogl_Projection.h`, Assimp headers,
-and the declared math implementations have not been added. It is preserved but
-is not included by the starter executable. The printed wood texture path is an
-example; the texture has not been added either.
+### Windows
 
-## Build on Windows
+Choose either:
 
-Install Visual Studio 2022 with Desktop development with C++ and a Windows SDK.
-From an x64 Native Tools Command Prompt (or Visual Studio's CMake integration):
+- Install Visual Studio Build Tools with Desktop development with C++ and a
+  Windows SDK. Run the build in an x64 Native Tools Command Prompt with Ninja
+  on PATH. The Visual Studio IDE also supports opening this CMake project.
+- Install MSYS2, open its UCRT64 terminal, and install:
 
-```powershell
-cmake --preset x64-debug
-cmake --build out/build/x64-debug
-.\out\build\x64-debug\Sandbox\Sandbox.exe
+```sh
+pacman -S --needed mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-cmake mingw-w64-ucrt-x86_64-ninja
 ```
 
-The Ninja presets require Ninja on PATH and the matching MSVC developer environment.
-Alternatively, from a normal terminal:
+Use the UCRT64 terminal for MinGW builds so the compiler and runtime DLLs are
+on PATH. Use separate build directories when changing compilers.
+
+### Linux (Ubuntu / Debian)
+
+```sh
+sudo apt-get update
+sudo apt-get install build-essential cmake ninja-build xorg-dev libgl1-mesa-dev
+```
+
+For Clang, also install `clang`. X11 is the default Linux backend. To add Wayland,
+install `libwayland-dev libxkbcommon-dev wayland-protocols pkg-config` and configure
+with `-DGLFW_BUILD_WAYLAND=ON`. Other distributions need equivalent development
+packages; see the [GLFW compilation guide](https://www.glfw.org/docs/latest/compile.html).
+
+### macOS
+
+Install Apple command-line tools and CMake/Ninja (Homebrew shown):
+
+```sh
+xcode-select --install
+brew install cmake ninja
+```
+
+Apple's SDK supplies OpenGL. OpenGL is deprecated on macOS; this project targets
+desktop OpenGL, not Metal, mobile platforms, or browsers.
+
+## Build and run
+
+After installing your platform's requirements, clone the repository, enter its
+root directory, and run the same commands on all three desktop platforms:
+
+```sh
+cmake --preset debug
+cmake --build --preset debug --parallel
+ctest --preset debug
+```
+
+Run `./out/build/debug/bin/Sandbox` on Linux/macOS or
+`.\out\build\debug\bin\Sandbox.exe` on Windows. Use `release` in place of `debug`
+for an optimized build. Binaries are always in the build directory's `bin/`.
+The smoke test prints dependency versions and an example asset path; it does not
+require a display or create an OpenGL context.
+
+CMake detects the system compiler. On Linux/macOS you can select one explicitly
+in a fresh build directory:
+
+```sh
+CC=clang CXX=clang++ cmake -S . -B out/build/clang -G Ninja -DCMAKE_BUILD_TYPE=Debug
+cmake --build out/build/clang
+ctest --test-dir out/build/clang --output-on-failure
+```
+
+Ninja is optional when using CMake directly with another generator. For example,
+with MSVC Build Tools installed, from a normal Windows terminal:
 
 ```powershell
 cmake -S . -B out/build/vs -G "Visual Studio 17 2022" -A x64
 cmake --build out/build/vs --config Debug
-.\out\build\vs\Sandbox\Debug\Sandbox.exe
+ctest --test-dir out/build/vs -C Debug --output-on-failure
+.\out\build\vs\bin\Sandbox.exe
 ```
 
-Add new implementation files explicitly to the appropriate module's CMakeLists.txt.
-Keep public headers in `include/` and implementation files in `src/`.
+The original `x64-debug`, `x64-release`, `x86-debug`, and `x86-release` presets
+remain available for MSVC developer environments of the matching architecture.
+
+## Layout and current scope
+
+- `Renderer/include`, `Renderer/src`: public engine headers and implementation.
+- `Sandbox`: executable linked to `EmreGL::Engine`.
+- `Math/include`: existing incomplete math header; interface placeholder module.
+- `GUI`: interface placeholder for future sources.
+- `Assets`: runtime assets.
+- `External`: bundled GLFW and GLEW sources and their licenses.
+
+Add implementation files explicitly to each module's CMakeLists.txt. The math
+header still needs `ogl_Vector.h`, `ogl_Projection.h`, Assimp and its declared
+implementations. It is preserved but not included by the starter executable.
+The example `textures/wood.png` asset is not included. Asset paths currently point
+to the source checkout; this is a development build, not an installable package.
+
+## Validation
+
+The GitHub Actions workflow builds and runs the smoke test on Windows (MSVC and
+MinGW), Linux (GCC and Clang), and macOS (Apple Clang). These jobs run after pushing
+to GitHub; adding a workflow alone does not mean all platforms have passed.
 
 ## Git
 
-The local repository uses `main`. Build output and local IDE state are ignored.
-Bundled dependencies are tracked as source, rather than requiring a network fetch.
-No remote is configured. To connect an existing empty remote repository:
+Build output and IDE state are ignored. Bundled dependencies are tracked as
+source. To connect an empty GitHub repository:
 
-```powershell
+```sh
 git remote add origin <repository-url>
 git push -u origin main
 ```
 
+Choose a license for your own code before advertising reuse rights. Bundled
+dependency licenses are retained in `External`.
