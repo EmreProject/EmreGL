@@ -1,0 +1,5 @@
+add_library(Engine STATIC src/EmreGL.cpp include/EmreGL.h)
+add_library(EmreGL::Engine ALIAS Engine)
+target_include_directories(Engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_compile_features(Engine PUBLIC cxx_std_20)
+target_link_libraries(Engine PUBLIC EmreMath EmreGUI glfw glew_s)

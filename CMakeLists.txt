@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 3.20)
+project(EmreGL VERSION 0.1.0 LANGUAGES C CXX)
+
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
+set(BUILD_UTILS OFF CACHE BOOL "" FORCE)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+
+add_subdirectory(External/glfw)
+add_subdirectory(External/glew/build/cmake)
+add_subdirectory(Assets)
+add_subdirectory(Math)
+add_subdirectory(GUI)
+add_subdirectory(Renderer)
+add_subdirectory(Sandbox)

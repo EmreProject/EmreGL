@@ -1,0 +1,20 @@
+# Build output and IDE state
+/out/
+/build/
+/.vs/
+/.idea/
+/.vscode/
+CMakeUserPresets.json
+CMakeCache.txt
+CMakeFiles/
+*.user
+*.suo
+*.obj
+*.o
+*.pdb
+*.ilk
+
+# Bundled dependency build products
+/External/**/bin/
+/External/**/lib/
+/External/**/*(1).*
