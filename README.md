@@ -4,7 +4,7 @@ C++20 / CMake starter project with bundled GLFW and GLEW.
 
 ## Requirements
 
-A C++20 compiler (MSVC, GCC, Clang or Apple Clang), CMake 3.21+ and Ninja.
+A C++20 compiler (MSVC, GCC, Clang or Apple Clang), CMake 3.22+ and Ninja.
 Visual Studio's IDE is optional. GLFW and GLEW sources are included; no submodule
 or dependency download is needed. OpenGL development libraries are required.
 
@@ -120,3 +120,17 @@ git push -u origin main
 
 Choose a license for your own code before advertising reuse rights. Bundled
 dependency licenses are retained in `External`.
+
+
+## ImGui
+
+`External/imgui/CMakeLists.txt` defines the `imgui` library, including the demo and the
+GLFW/OpenGL3 backends. `EmreGUI` links `imgui`, and `Renderer` links `EmreGUI`, so Sandbox can include
+`imgui.h`, `imgui_impl_glfw.h`, and `imgui_impl_opengl3.h` without extra paths.
+The startup output prints the linked ImGui version.
+
+Displaying UI still requires a GLFW window with a current OpenGL context, ImGui
+context/backend initialization, a frame/render loop, and shutdown. Follow the
+bundled `External/imgui/examples/example_glfw_opengl3/main.cpp` for that lifecycle.
+The current console Sandbox does not open a GUI window.
+

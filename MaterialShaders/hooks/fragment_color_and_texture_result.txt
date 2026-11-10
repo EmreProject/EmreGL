@@ -1,0 +1,1 @@
+transformedFragColor = mix(vColor,texture(gSampler, TexCoord0.xy),colorToTexture);

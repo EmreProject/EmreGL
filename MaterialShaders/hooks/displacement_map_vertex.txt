@@ -1,0 +1,8 @@
+struct DisplacementMap{
+
+sampler2D map;
+float intensity;
+
+};
+
+uniform DisplacementMap uDisplacement;

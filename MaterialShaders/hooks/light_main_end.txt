@@ -1,0 +1,1 @@
+transformedFragColor  *= vec4(TotalLight.rgb,1.);

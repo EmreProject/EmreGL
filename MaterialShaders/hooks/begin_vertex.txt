@@ -1,0 +1,6 @@
+vec3 transformedPosition = position;
+vec2 transformedUv = uv;
+vec3 transformedNormal = normal;
+
+mat4 viewMatrix_=viewMatrix;
+mat4 projectionMatrix_=projectionMatrix;

@@ -1,0 +1,8 @@
+vec3 normal_ = Normal0;
+
+    if(dot(normal_ , -LightDirection) < 0.){
+	
+	LightDirection = -(reflect(-LightDirection,normal_));
+//Normal=-Normal;
+
+    }

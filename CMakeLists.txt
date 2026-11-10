@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.22)
 project(EmreGL VERSION 0.1.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -11,8 +11,20 @@ option(GLFW_BUILD_WAYLAND "Build GLFW Wayland support" OFF)
 set(BUILD_UTILS OFF CACHE BOOL "" FORCE)
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 
+# Build the locally bundled Assimp without tools, tests or installation rules.
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_SAMPLES OFF CACHE BOOL "" FORCE)
+set(ASSIMP_INSTALL OFF CACHE BOOL "" FORCE)
+set(ASSIMP_WARNINGS_AS_ERRORS OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_ZLIB ON CACHE BOOL "" FORCE)
+
+
+add_subdirectory(External/stb)
 add_subdirectory(External/glfw EXCLUDE_FROM_ALL)
 add_subdirectory(External/glew/build/cmake EXCLUDE_FROM_ALL)
+add_subdirectory(External/assimp EXCLUDE_FROM_ALL)
+add_subdirectory(External/imgui EXCLUDE_FROM_ALL)
 # Bundled GLEW only exports its installed include path upstream.
 target_include_directories(glew_s PUBLIC
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/External/glew/include>")

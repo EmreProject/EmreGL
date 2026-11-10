@@ -1,0 +1,3 @@
+ for (int i = 0 ;i < pointLightNumber ;i++) {
+        TotalLight += CalcPointLight(gPointLights[i], Normal, N_world);
+    }

@@ -1,0 +1,5 @@
+Normal = texture(gNormalMap, TexCoord0).xyz;
+// transform normal vector to range [-1,1]
+Normal = normalize(Normal * 2.0 - 1.0);  
+isNormalMap=1.0;
+N_world= normalize(vNormalMatrix * normalize(realTBN * Normal));

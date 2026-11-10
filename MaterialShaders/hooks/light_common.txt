@@ -1,0 +1,191 @@
+#define MAX_POINT_LIGHT_NUMBER 1
+#define MAX_SPOT_LIGHT_NUMBER 1
+#define MAX_DIR_LIGHT_NUMBER 1
+
+uniform int directionalLightNumber;
+uniform int pointLightNumber;
+uniform int spotLightNumber;
+
+struct MaterialSpecular{
+    float SpecularIntensity; //specific to material like wood or gold
+    float SpecularPower; //specific to material like wood or gold
+};
+
+uniform MaterialSpecular materialSpecular;
+
+
+
+struct BaseLight
+{
+    vec3 Color;
+    float AmbientIntensity;
+    float DiffuseIntensity;
+    float SpecularIntensity;
+
+    float isShadowEnabled;
+    mat4 lightProjectionViewMatrix;
+    
+};
+
+struct DirectionalLight
+{
+    BaseLight Base;
+    vec3 Direction;
+    vec3 WorldDirection;
+    sampler2D shadowMap;
+    float biasFactor;
+    float minBias;
+};
+
+struct Attenuation
+{
+    float Constant;
+    float Linear;
+    float Exp;
+};
+
+
+struct PointLight
+{
+    BaseLight Base;
+    vec3 LocalPos;
+    vec3 WorldPos; //used for shadow only
+    vec3 CameraWorldPos;
+    samplerCube shadowMapCube; //specific cube shadow map for pointlight
+    Attenuation Atten;
+    float farPlane;
+    float bias;
+    float diskRadius;
+};
+
+
+struct SpotLight
+{
+    BaseLight Base;
+    Attenuation Atten;
+    vec3 LocalPos;
+    vec3 Direction;
+    vec3 WorldDirection;
+    vec3 WorldPosition;
+    float InnerCutoff;
+    float OuterCutoff;
+    sampler2D shadowMap;
+    float biasFactor;
+    float minBias;
+    
+};
+
+
+vec4 CalcLightInternal(BaseLight Light, vec3 LightDirection, vec3 Normal)
+{
+    vec4 AmbientColor = vec4(Light.Color, 1.0f) *
+                        Light.AmbientIntensity ;
+	
+     
+    float DiffuseFactor = max(dot(Normal, -LightDirection),0.);
+
+    vec4 DiffuseColor = vec4(0, 0, 0, 0);
+    vec4 SpecularColor = vec4(0, 0, 0, 0);
+
+    if (DiffuseFactor > 0) {
+        DiffuseColor = vec4(Light.Color, 1.0f) *
+                       Light.DiffuseIntensity *
+                       DiffuseFactor;
+        vec3 PixelToCamera = normalize((gCameraLocalPos - LocalPos0));
+        <normal_map_light_internal>
+        //***BLINN-PHONG LIGHT
+
+     vec3 halfwayDir=normalize(PixelToCamera - LightDirection) ;  
+     float spec = pow(max(dot(Normal, halfwayDir),0.), 32.0); //32 materiale özel
+     SpecularColor = vec4(Light.Color, 1.0f) * spec * Light.SpecularIntensity;
+       
+    }
+
+    return (AmbientColor + DiffuseColor + SpecularColor);
+}
+
+
+vec4 CalcDirectionalLight(DirectionalLight l, vec3 Normal, vec3 WorldNormal)
+{
+
+         
+    vec3 LightDirection =l.Direction;
+    <double_side_directional_fragment>
+    <normal_map_directional_light>
+    vec4 ret = CalcLightInternal(l.Base, LightDirection, Normal);
+    if(l.Base.isShadowEnabled > 0.5){
+    <shadow_map_directional_light>
+     }	
+     return ret;
+	
+}
+
+vec4 CalcPointLight(PointLight l, vec3 Normal, vec3 WorldNormal)
+{
+
+   
+    vec3 LightDirection = LocalPos0 - l.LocalPos;
+    float Distance = length(LightDirection);
+    LightDirection /= Distance ; //normalize
+    <double_side_point_fragment>
+
+    <normal_map_point_light>
+    LightDirection = normalize(LightDirection); 
+
+    vec4 ret = CalcLightInternal(l.Base, LightDirection, Normal);
+
+	if(l.Base.isShadowEnabled > 0.5){
+ 		 <shadow_map_point_light>
+	}
+   /*
+	 float Attenuation =  l.Atten.Constant +
+                         l.Atten.Linear * Distance +
+                         l.Atten.Exp * Distance * Distance;
+*/
+
+	
+	float realDistance = length(l.WorldPos.xyz - FragPos.xyz);
+    	float Attenuation= 1.0 / (realDistance *realDistance );
+
+
+//float Attenuation= 1.0 / (Distance*Distance);
+    
+    return ret* Attenuation;
+}
+
+vec4 CalcSpotLight(SpotLight l, vec3 Normal,vec3 WorldNormal)
+{
+    vec3 LightDirection = LocalPos0 - l.LocalPos;
+    float Distance = length(LightDirection);
+    LightDirection /= Distance ; //normalize
+    vec3 SpotDirection = normalize(l.Direction); 
+    <double_side_spot_fragment>
+  
+    float SpotFactor = dot(LightDirection, SpotDirection);
+     <normal_map_spot_light>
+
+    if (SpotFactor > l.OuterCutoff) {
+        
+
+    <normal_map_point_light>
+    LightDirection = normalize(LightDirection); 
+
+    vec4 ret = CalcLightInternal(l.Base, LightDirection, Normal);
+
+	
+	if(l.Base.isShadowEnabled > 0.5){
+        <shadow_map_spot_light>
+	}
+	 float theta = SpotFactor; 
+   	 float epsilon = l.InnerCutoff - l.OuterCutoff;
+  	 float intensity = clamp((theta - l.OuterCutoff) / epsilon, 0.0, 1.0);
+   float realDistance = length(l.WorldPosition.xyz - FragPos.xyz);
+    	float Attenuation= 1.0 / (realDistance *realDistance );
+//float Attenuation= 1.0 / (Distance*Distance);
+
+	return ret * intensity*Attenuation ;
+    }
+    else {
+        return vec4(0,0,0,0);
+    }
+}

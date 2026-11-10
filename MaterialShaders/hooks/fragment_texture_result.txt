@@ -1,0 +1,2 @@
+transformedFragColor = texture(gSampler, TexCoord0.xy);
+opacity=transformedFragColor.a;

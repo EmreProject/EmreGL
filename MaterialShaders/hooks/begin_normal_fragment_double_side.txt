@@ -1,0 +1,4 @@
+
+if (!gl_FrontFacing) {
+    Normal = -Normal; // flip for back faces
+}

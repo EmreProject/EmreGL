@@ -1,0 +1,22 @@
+   if(isNormalMap<0.5){
+	N_world = vWorldNormal;
+   }
+ 
+    vec3 I = normalize(FragPos.xyz - cameraWorldPos);
+
+if (dot(I, N_world) > 0.0) {
+    N_world = -N_world;
+}
+
+    vec3 R = reflect(I, N_world);
+    vec3 reflectionColor = texture(environmentMap, R).rgb;
+
+    vec3 T = refract(I, N_world , refractionRatio);
+    vec3 refractionColor = texture(environmentMap, T).rgb;
+
+    if (length(T) < 0.001) {
+        refractionColor = reflectionColor;
+    }
+
+    FragColor.rgb = mix(FragColor.rgb, reflectionColor, clamp(envReflection, 0.0, 1.0));
+    FragColor.rgb = mix(FragColor.rgb, refractionColor, clamp(envRefraction, 0.0, 1.0));

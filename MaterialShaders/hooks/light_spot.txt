@@ -1,0 +1,2 @@
+
+uniform SpotLight gSpotLights[MAX_SPOT_LIGHT_NUMBER];

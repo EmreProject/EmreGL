@@ -1,0 +1,2 @@
+float colTex=texture(satTex,TexCoord0.xy).g;
+//FragColor=vec4(colTex,colTex,colTex,1.);

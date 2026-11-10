@@ -1,0 +1,8 @@
+vec3 normal_ = Normal0;
+
+    if(dot(normal_ , -SpotDirection) < 0.){
+	
+	SpotDirection = -(reflect(-SpotDirection,normal_));
+	LightDirection = -(reflect(-LightDirection,normal_));
+
+    }

@@ -1,0 +1,18 @@
+
+struct Influence {
+    int id;   // bone index
+    float w;   // weight
+};
+
+// std430 packs this struct to 8 bytes (good for dense arrays)
+layout(std430, binding = 0) buffer BoneInfluences {
+   Influence inf[];
+};
+
+// --- SSBO 1: bone transforms as mat4 (column-major in GLSL) ---
+layout(std430, binding = 1) buffer BonePalette {
+    mat4 boneMats[];  // final = GlobalPose * InverseBind, one per bone
+};
+
+
+

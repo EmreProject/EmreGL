@@ -1,0 +1,2 @@
+vWorldNormal = normalize(normalMatrix * transformedNormal);
+vNormalMatrix = normalMatrix;

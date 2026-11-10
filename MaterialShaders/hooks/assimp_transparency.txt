@@ -1,0 +1,7 @@
+// uniforms set from Assimp material:
+/*
+uniform float uOpacity;        // overall opacity (Assimp)
+uniform int   uAlphaMode;      // 0=OPAQUE, 1=BLEND
+uniform sampler2D uOpacityMap;
+uniform bool uIsOpacityMap;
+*/

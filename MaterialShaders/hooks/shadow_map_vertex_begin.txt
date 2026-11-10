@@ -1,0 +1,1 @@
+FragPos = modelMatrix * vec4(transformedPosition,1.0);

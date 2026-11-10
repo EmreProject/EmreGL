@@ -1,0 +1,6 @@
+
+uniform vec3 cameraWorldPos;
+uniform samplerCube environmentMap;
+uniform float envReflection;
+uniform float envRefraction;
+uniform float refractionRatio;

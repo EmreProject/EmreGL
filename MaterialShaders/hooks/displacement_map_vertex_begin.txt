@@ -1,0 +1,4 @@
+float dispValue = texture(uDisplacement.map, transformedUv).r * uDisplacement.intensity;
+
+//Move vertex along the normal (local space displacement)
+transformedPosition += normalize(normal) * dispValue ;

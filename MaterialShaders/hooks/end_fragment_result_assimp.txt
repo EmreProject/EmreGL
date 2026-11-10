@@ -1,0 +1,21 @@
+//float opacity is in begin fragment result, it is set alpha in fragment_texture_result
+/*
+  float op = 1.0;
+    if (uIsOpacityMap){
+        // Use .r (due to swizzle, .a will also work)
+        op = texture(uOpacityMap, TexCoord0.xy).r;
+    }
+
+
+
+if(uAlphaMode==0){
+
+opacity=1.;
+
+}else if(uAlphaMode==1){
+
+opacity=opacity*uOpacity*op;
+
+}
+*/
+FragColor = vec4(transformedFragColor.rgb,opacity);

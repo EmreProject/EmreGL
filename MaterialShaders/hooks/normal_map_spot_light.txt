@@ -1,0 +1,2 @@
+LightDirection = normalize(TBN * LightDirection);
+SpotDirection = normalize(TBN * SpotDirection);

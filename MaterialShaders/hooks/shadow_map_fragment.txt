@@ -1,0 +1,53 @@
+uniform float bleedReduction;
+uniform float minVariance;
+
+// array of offset direction for sampling
+vec3 gridSamplingDisk[20] = vec3[]
+(
+   vec3(1, 1,  1), vec3( 1, -1,  1), vec3(-1, -1,  1), vec3(-1, 1,  1), 
+   vec3(1, 1, -1), vec3( 1, -1, -1), vec3(-1, -1, -1), vec3(-1, 1, -1),
+   vec3(1, 1,  0), vec3( 1, -1,  0), vec3(-1, -1,  0), vec3(-1, 1,  0),
+   vec3(1, 0,  1), vec3(-1,  0,  1), vec3( 1,  0, -1), vec3(-1, 0, -1),
+   vec3(0, 1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0, 1, -1)
+);
+
+float linstep(float min_ , float max_ , float v){
+
+return clamp((v - min_ )/(max_ - min_), 0. , 1.);
+
+}
+
+float ChebyshevUpperBound(vec2 moments, float currentDepth_,float maxDistance) {
+
+
+	float currentDepth= (currentDepth_ - 0.05) / maxDistance;
+
+	float p= 0.;
+	if(currentDepth <= moments.x){
+	   p=1.0;
+	}
+
+	
+	float variance = moments.y -(moments.x* moments.x);
+	float g_MinVariance = minVariance ;
+	variance = max(variance,g_MinVariance);
+	float d= currentDepth - moments.x;
+	float p_Max= variance / (variance + d*d);
+	p_Max= linstep(bleedReduction, 1. , p_Max);
+	
+
+	return max(p_Max,p);
+
+}
+
+
+float ShadowCalculation(vec2 moments, float currentDepth,float maxDistance)
+{
+ 
+   
+    float visibility = ChebyshevUpperBound(moments, currentDepth,maxDistance);
+
+
+
+    return visibility ;
+}

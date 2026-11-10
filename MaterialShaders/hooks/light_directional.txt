@@ -1,0 +1,1 @@
+uniform DirectionalLight gDirectionalLights[MAX_DIR_LIGHT_NUMBER];

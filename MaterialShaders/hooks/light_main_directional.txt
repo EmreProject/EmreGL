@@ -1,0 +1,3 @@
+for (int i = 0; i < directionalLightNumber; i++) {
+    TotalLight += CalcDirectionalLight(gDirectionalLights[i], Normal, N_world);
+}

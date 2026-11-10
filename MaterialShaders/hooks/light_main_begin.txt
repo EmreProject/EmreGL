@@ -1,0 +1,1 @@
+vec4 TotalLight=vec4(0.,0.,0.,0.);

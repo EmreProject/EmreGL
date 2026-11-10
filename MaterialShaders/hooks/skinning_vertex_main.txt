@@ -1,0 +1,38 @@
+ vec4 P = vec4(transformedPosition, 1.0);
+ T = normalize(tangent.xyz);
+ N = normalize(transformedNormal);
+
+ vec4 skinned = vec4(0.0);
+ vec3 Nacc = vec3(0.0);
+ vec3 Tacc = vec3(0.0);
+
+
+
+for (int i = 0; i < aInfCount; ++i) {
+        Influence infi = inf[aInfStart + i];
+        float w = infi.w;
+        mat4  B = boneMats[infi.id];
+
+        skinned += (B * P) * w;
+
+ // vectors use rotation part; if bones may scale/shear, use inverse-transpose:
+        // mat3 R = transpose(inverse(mat3(B)));
+       mat3 R = transpose(inverse(mat3(B))); 
+
+Nacc += (R * N) * w;
+        Tacc += (R * T) * w;
+
+    }
+
+  vec3 Nsk = normalize(Nacc);
+    vec3 Tsk = normalize(Tacc);
+
+    // keep T orthogonal to N (Gram–Schmidt), then build B with handedness
+    Tsk = normalize(Tsk - dot(Tsk, Nsk) * Nsk);
+    vec3 Bsk = normalize(cross(Nsk, Tsk)) * (tangent.w < 0.0 ? -1.0 : 1.0);
+
+   // OBJECT->TANGENT (transpose of {T,B,N})
+    TBN = transpose(mat3(Tsk, Bsk, Nsk));
+
+   transformedPosition=skinned.xyz;
+   transformedNormal=Nsk;
