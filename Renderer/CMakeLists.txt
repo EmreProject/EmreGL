@@ -9,7 +9,7 @@ add_library(Renderer STATIC
     src/ogl_lightning_v2.cpp
     src/ogl_model_v2.cpp
     
-    src/ogl_Projection.cpp
+    
     src/ogl_shader_v2.cpp
     
     src/ogl_texture.cpp
@@ -58,4 +58,7 @@ add_library(Renderer STATIC
 
 target_include_directories(Renderer PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_compile_features(Renderer PUBLIC cxx_std_20)
+target_compile_definitions(Renderer PRIVATE
+    ENGINE_MATERIAL_SHADERS_DIR="${ENGINE_MATERIAL_SHADERS_DIR}"
+)
 target_link_libraries(Renderer PUBLIC EmreMath EmreGUI stb_image glfw glew_s assimp::assimp)

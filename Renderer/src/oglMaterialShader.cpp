@@ -241,7 +241,7 @@ namespace MaterialShaderHooks {
 
 
 	CommonHook::CommonHook() :Hook("<common>",
-		"./ogldevTutorials/meshes/shaders/hooks/common.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/common.txt") {
 		
 	}
 
@@ -298,69 +298,69 @@ namespace MaterialShaderHooks {
 	}
 
 	AttributesBone::AttributesBone() : Hook("<attributes_bone>",
-		"./ogldevTutorials/meshes/shaders/hooks/attributes_bone.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/attributes_bone.txt") {
 	}
 
 	SkinningVertexMain::SkinningVertexMain() : Hook("<skinning_vertex_main>",
-		"./ogldevTutorials/meshes/shaders/hooks/skinning_vertex_main.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/skinning_vertex_main.txt") {
 	}
 
 	ColorVertexHook::ColorVertexHook() : Hook("<color_vertex>",
-		"./ogldevTutorials/meshes/shaders/hooks/color_vertex.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/color_vertex.txt") {
 
 	}
 
 	BeginVertexHook::BeginVertexHook(): Hook("<begin_vertex>",
-		"./ogldevTutorials/meshes/shaders/hooks/begin_vertex.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/begin_vertex.txt") {
 
 	}
 
 	BeginColorVertexHook::BeginColorVertexHook() : Hook("<begin_color_vertex>",
-		"./ogldevTutorials/meshes/shaders/hooks/begin_color_vertex.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/begin_color_vertex.txt") {
 
 	}
 
 	EndColorVertexHook::EndColorVertexHook() : Hook("<end_color_vertex>",
-		"./ogldevTutorials/meshes/shaders/hooks/end_color_vertex.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/end_color_vertex.txt") {
 
 	}
 
 	EnvironmentMapVertex::EnvironmentMapVertex() :Hook("<environment_map_vertex>",
-		"./ogldevTutorials/meshes/shaders/hooks/environment_map_vertex.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/environment_map_vertex.txt") {
 
 	}
 
 	EnvironmentMapVertexBegin::EnvironmentMapVertexBegin() :Hook("<environment_map_vertex_begin>",
-		"./ogldevTutorials/meshes/shaders/hooks/environment_map_vertex_begin.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/environment_map_vertex_begin.txt") {
 
 	}
 
 	//FRAGMENT SHADER HOOKS
 
 	AssimpTransparency::AssimpTransparency() : Hook("<assimp_transparency>",
-		"./ogldevTutorials/meshes/shaders/hooks/assimp_transparency.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/assimp_transparency.txt") {
 
 	}
 
 
 	ColorFragmentHook::ColorFragmentHook() : Hook("<color_fragment>",
-		"./ogldevTutorials/meshes/shaders/hooks/color_fragment.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/color_fragment.txt") {
 
 	}
 
 	TextureFragmentHook::TextureFragmentHook() : Hook("<texture_fragment>",
-		"./ogldevTutorials/meshes/shaders/hooks/texture_fragment.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/texture_fragment.txt") {
 
 	}
 
 	ColorAndTextureFragmentHook::ColorAndTextureFragmentHook() : Hook("<color_and_texture_fragment>",
-		"./ogldevTutorials/meshes/shaders/hooks/color_and_texture_fragment.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/color_and_texture_fragment.txt") {
 
 	}
 
 
 	LightCommonHook::LightCommonHook() : Hook("<light_common>",
-		"./ogldevTutorials/meshes/shaders/hooks/light_common.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/light_common.txt") {
 
 	}
 
@@ -398,16 +398,16 @@ namespace MaterialShaderHooks {
 		};
 
 		replaceNormalMapTag("<normal_map_light_internal>",
-			"./ogldevTutorials/meshes/shaders/hooks/normal_map_light_internal.txt");
+			ENGINE_MATERIAL_SHADERS_DIR "/hooks/normal_map_light_internal.txt");
 
 		replaceNormalMapTag("<normal_map_directional_light>",
-			"./ogldevTutorials/meshes/shaders/hooks/normal_map_directional_light.txt");
+			ENGINE_MATERIAL_SHADERS_DIR "/hooks/normal_map_directional_light.txt");
 
 		replaceNormalMapTag("<normal_map_point_light>",
-			"./ogldevTutorials/meshes/shaders/hooks/normal_map_point_light.txt");
+			ENGINE_MATERIAL_SHADERS_DIR "/hooks/normal_map_point_light.txt");
 
 		replaceNormalMapTag("<normal_map_spot_light>",
-			"./ogldevTutorials/meshes/shaders/hooks/normal_map_spot_light.txt");
+			ENGINE_MATERIAL_SHADERS_DIR "/hooks/normal_map_spot_light.txt");
 
 		
 		}
@@ -416,28 +416,28 @@ namespace MaterialShaderHooks {
 
 
 	DisplacementMapVertexHook::DisplacementMapVertexHook() : Hook("<displacement_map_vertex>",
-		"./ogldevTutorials/meshes/shaders/hooks/displacement_map_vertex.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/displacement_map_vertex.txt") {
 
 
 
 	}
 
 	DisplacementMapVertexBeginHook::DisplacementMapVertexBeginHook() : Hook("<displacement_map_vertex_begin>",
-		"./ogldevTutorials/meshes/shaders/hooks/displacement_map_vertex_begin.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/displacement_map_vertex_begin.txt") {
 
 
 
 	}
 
 	BeginNormalMapVertexHook::BeginNormalMapVertexHook() :Hook("<begin_normal_map_vertex>",
-		"./ogldevTutorials/meshes/shaders/hooks/begin_normal_map_vertex.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/begin_normal_map_vertex.txt") {
 
 
 
 	}
 
 	BeginNormalMapFragmentHook::BeginNormalMapFragmentHook() :Hook("<begin_normal_map_fragment>",
-		"./ogldevTutorials/meshes/shaders/hooks/begin_normal_map_fragment.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/begin_normal_map_fragment.txt") {
 
 
 
@@ -446,7 +446,7 @@ namespace MaterialShaderHooks {
 
 
 	InNormalMapHook::InNormalMapHook() : Hook("<in_normal_map>",
-		"./ogldevTutorials/meshes/shaders/hooks/in_normal_map.txt" ) {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/in_normal_map.txt" ) {
 
 
 
@@ -454,14 +454,14 @@ namespace MaterialShaderHooks {
 
 
 	OutNormalMapHook::OutNormalMapHook() : Hook("<out_normal_map>",
-		"./ogldevTutorials/meshes/shaders/hooks/out_normal_map.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/out_normal_map.txt") {
 
 
 
 	}
 
 	OutFragmentColorHook::OutFragmentColorHook() : Hook("<out_fragment_color>",
-		"./ogldevTutorials/meshes/shaders/hooks/out_fragment_color.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/out_fragment_color.txt") {
 
 
 
@@ -469,156 +469,156 @@ namespace MaterialShaderHooks {
 
 
 	LightDirectionalHook::LightDirectionalHook() : Hook("<light_directional>",
-		"./ogldevTutorials/meshes/shaders/hooks/light_directional.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/light_directional.txt") {
 
 	}
 
 
 	LightPointHook::LightPointHook() : Hook("<light_point>",
-		"./ogldevTutorials/meshes/shaders/hooks/light_point.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/light_point.txt") {
 
 	}
 	
 	LightSpotHook::LightSpotHook() : Hook("<light_spot>",
-		"./ogldevTutorials/meshes/shaders/hooks/light_spot.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/light_spot.txt") {
 
 	}
 
 	BeginFragmentHook::BeginFragmentHook() : Hook("<begin_fragment>",
-		"./ogldevTutorials/meshes/shaders/hooks/begin_fragment.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/begin_fragment.txt") {
 
 	}
 
 	BeginFragmentResultHook::BeginFragmentResultHook() : Hook("<begin_fragment_result>",
-		"./ogldevTutorials/meshes/shaders/hooks/begin_fragment_result.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/begin_fragment_result.txt") {
 
 	}
 
 	FragmentColorResultHook::FragmentColorResultHook() : Hook("<fragment_color_result>",
-		"./ogldevTutorials/meshes/shaders/hooks/fragment_color_result.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/fragment_color_result.txt") {
 
 	}
 
 	FragmentTextureResultHook::FragmentTextureResultHook() : Hook("<fragment_texture_result>",
-		"./ogldevTutorials/meshes/shaders/hooks/fragment_texture_result.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/fragment_texture_result.txt") {
 
 	}
 
 	FragmentColorAndTextureResultHook::FragmentColorAndTextureResultHook() : Hook("<fragment_color_and_texture_result>",
-		"./ogldevTutorials/meshes/shaders/hooks/fragment_color_and_texture_result.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/fragment_color_and_texture_result.txt") {
 
 	}
 
 	BeginFragmentManualGammaHook::BeginFragmentManualGammaHook() : Hook("<begin_fragment_manual_gamma>",
-		"./ogldevTutorials/meshes/shaders/hooks/begin_fragment_manual_gamma.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/begin_fragment_manual_gamma.txt") {
 	}
 
 	NormalMapHook::NormalMapHook() : Hook("<normal_map>",
-		"./ogldevTutorials/meshes/shaders/hooks/normal_map.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/normal_map.txt") {
 
 
 
 	}
 
 	BeginNormalFragmentHook::BeginNormalFragmentHook() : Hook("<begin_normal_fragment>",
-		"./ogldevTutorials/meshes/shaders/hooks/begin_normal_fragment.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/begin_normal_fragment.txt") {
 
 	}
 
 	BeginNormalFragmentDoubleSideHook::BeginNormalFragmentDoubleSideHook() : Hook("<begin_normal_fragment_double_side>",
-		"./ogldevTutorials/meshes/shaders/hooks/begin_normal_fragment_double_side.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/begin_normal_fragment_double_side.txt") {
 	}
 
 	LightMainBeginHook::LightMainBeginHook() : Hook("<light_main_begin>",
-		"./ogldevTutorials/meshes/shaders/hooks/light_main_begin.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/light_main_begin.txt") {
 
 	}
 
 	LightMainDirectionalHook::LightMainDirectionalHook() : Hook("<light_main_directional>",
-		"./ogldevTutorials/meshes/shaders/hooks/light_main_directional.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/light_main_directional.txt") {
 
 	}
 
 	LightMainPointHook::LightMainPointHook() : Hook("<light_main_point>",
-		"./ogldevTutorials/meshes/shaders/hooks/light_main_point.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/light_main_point.txt") {
 
 	}
 
 	LightMainSpotHook::LightMainSpotHook() : Hook("<light_main_spot>",
-		"./ogldevTutorials/meshes/shaders/hooks/light_main_spot.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/light_main_spot.txt") {
 
 	}
 
 	LightMainEndHook::LightMainEndHook() : Hook("<light_main_end>",
-		"./ogldevTutorials/meshes/shaders/hooks/light_main_end.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/light_main_end.txt") {
 
 	}
 
 	DoubleSideDirectionalFragmentHook::DoubleSideDirectionalFragmentHook() : Hook("<double_side_directional_fragment>",
-		"./ogldevTutorials/meshes/shaders/hooks/double_side_directional_fragment.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/double_side_directional_fragment.txt") {
 	}
 
 	DoubleSidePointFragmentHook::DoubleSidePointFragmentHook() : Hook("<double_side_point_fragment>",
-		"./ogldevTutorials/meshes/shaders/hooks/double_side_point_fragment.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/double_side_point_fragment.txt") {
 	}
 
 	DoubleSideSpotFragmentHook::DoubleSideSpotFragmentHook() : Hook("<double_side_spot_fragment>",
-		"./ogldevTutorials/meshes/shaders/hooks/double_side_spot_fragment.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/double_side_spot_fragment.txt") {
 	}
 
 	ShadowMapVertexHook::ShadowMapVertexHook() : Hook("<shadow_map_vertex>",
-		"./ogldevTutorials/meshes/shaders/hooks/shadow_map_vertex.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/shadow_map_vertex.txt") {
 	}	
 
 	ShadowMapVertexBeginHook::ShadowMapVertexBeginHook() : Hook("<shadow_map_vertex_begin>",
-		"./ogldevTutorials/meshes/shaders/hooks/shadow_map_vertex_begin.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/shadow_map_vertex_begin.txt") {
 	}
 
 	ShadowMapFragmentHook::ShadowMapFragmentHook() : Hook("<shadow_map_fragment>",
-		"./ogldevTutorials/meshes/shaders/hooks/shadow_map_fragment.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/shadow_map_fragment.txt") {
 	}
 
 	ShadowMapDirectionalLightHook::ShadowMapDirectionalLightHook() : Hook("<shadow_map_directional_light>",
-		"./ogldevTutorials/meshes/shaders/hooks/shadow_map_directional_light.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/shadow_map_directional_light.txt") {
 	}
 
 	ShadowMapSpotLightHook::ShadowMapSpotLightHook() : Hook("<shadow_map_spot_light>",
-		"./ogldevTutorials/meshes/shaders/hooks/shadow_map_spot_light.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/shadow_map_spot_light.txt") {
 	}
 
 	ShadowMapPointLightHook::ShadowMapPointLightHook() : Hook("<shadow_map_point_light>",
-		"./ogldevTutorials/meshes/shaders/hooks/shadow_map_point_light.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/shadow_map_point_light.txt") {
 	}
 
 
 	EndFragmentGammaEnabledHook::EndFragmentGammaEnabledHook() : Hook("<end_fragment_gamma_enabled>",
-		"./ogldevTutorials/meshes/shaders/hooks/end_fragment_gamma_enabled.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/end_fragment_gamma_enabled.txt") {
 	}
 
 	EndFragmentResultHook::EndFragmentResultHook() : Hook("<end_fragment_result>",
-		"./ogldevTutorials/meshes/shaders/hooks/end_fragment_result.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/end_fragment_result.txt") {
 
 	}
 
 	EndFragmentResultAssimp::EndFragmentResultAssimp() : Hook("<end_fragment_result_assimp>",
-		"./ogldevTutorials/meshes/shaders/hooks/end_fragment_result_assimp.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/end_fragment_result_assimp.txt") {
 
 	}
 
 	EnvironmentMapFragment::EnvironmentMapFragment() :Hook("<environment_map_fragment>",
-		"./ogldevTutorials/meshes/shaders/hooks/environment_map_fragment.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/environment_map_fragment.txt") {
 
 	}
 
 	EnvironmentMapNormalMapFragment::EnvironmentMapNormalMapFragment() :Hook("<environment_map_normal_map_fragment>",
-		"./ogldevTutorials/meshes/shaders/hooks/environment_map_normal_map_fragment.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/environment_map_normal_map_fragment.txt") {
 
 
 
 	}
 
 	EndFragmentResultEnvironmentMap::EndFragmentResultEnvironmentMap() :Hook("<end_fragment_result_environment_map>",
-		"./ogldevTutorials/meshes/shaders/hooks/end_fragment_result_environment_map.txt") {
+		ENGINE_MATERIAL_SHADERS_DIR "/hooks/end_fragment_result_environment_map.txt") {
 
 	}
 

@@ -75,8 +75,8 @@ namespace OglMeshes{
 	//IT IS FOR 2 SPOT AND POÝNT LÝGHTS JUST MODIFY IT FOR ANY NUMBERS!!!!
 	void MeshesCommon_::setShader() {
 
-		shader.reset(new MyOglShader::LightningShader("./ogldevTutorials/meshes/shaders/parallax.vs",
-			"./ogldevTutorials/meshes/shaders/parallax.fs"));
+		shader.reset(new MyOglShader::LightningShader(ENGINE_MATERIAL_SHADERS_DIR "/parallax.vs",
+			ENGINE_MATERIAL_SHADERS_DIR "/parallax.fs"));
 
 		shader->setWVPlocation("gWVP");
 		shader->setMaterialLocation("gMaterial.AmbientColor", "gMaterial.DiffuseColor", "gMaterial.SpecularColor");

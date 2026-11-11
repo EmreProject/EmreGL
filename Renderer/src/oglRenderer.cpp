@@ -273,7 +273,7 @@ namespace OglRenderer {
 
 
 		ofstream off;
-		off.open("./ogldevTutorials/Debug/debugShaders.txt");
+		off.open(ENGINE_MATERIAL_SHADERS_DIR "/Debug/debugShaders.txt");
 		off << "---"<<endl;
 		off.close();
 

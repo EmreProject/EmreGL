@@ -3,9 +3,8 @@
 add_library(EmreMath STATIC
     src/ogl_Vector.cpp
     src/ogl_Matrix.cpp
-    include/ogl_Vector.h
-    include/ogl_Matrix.h
-)
+    src/ogl_Projection.cpp
+ "src/ogl_Projection.cpp" "include/ogl_Projection.h")
 
 target_include_directories(EmreMath PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_compile_features(EmreMath PUBLIC cxx_std_20)

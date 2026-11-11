@@ -1077,7 +1077,7 @@ namespace OglObject3D {
 
 
 			ofstream off;
-			off.open("./ogldevTutorials/Debug/debugShaders.txt", std::ios::app);
+			off.open(ENGINE_MATERIAL_SHADERS_DIR "/Debug/debugShaders.txt", std::ios::app);
 			off << *this->vertexShaderText
 				<< endl << endl
 				<< "--------------------"
@@ -1467,8 +1467,8 @@ namespace OglObject3D {
 	MeshBasicMaterial::MeshBasicMaterial(): Material() {
 
 		//vsText, fsText sadece string olarak atanýr
-		this->shader.setShaderTextOnly("./ogldevTutorials/meshes/shaders/material_vs.vs",
-			"./ogldevTutorials/meshes/shaders/material_fs.fs");
+		this->shader.setShaderTextOnly(ENGINE_MATERIAL_SHADERS_DIR "/material_vs.vs",
+			ENGINE_MATERIAL_SHADERS_DIR "/material_fs.fs");
 
 
 		this->vertexShaderText = this->shader.getVertexShaderText();

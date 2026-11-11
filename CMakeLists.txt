@@ -37,6 +37,7 @@ endforeach()
 
 include(CTest)
 add_subdirectory(Assets)
+add_subdirectory(MaterialShaders)
 add_subdirectory(Math)
 add_subdirectory(GUI)
 add_subdirectory(Renderer)

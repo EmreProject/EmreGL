@@ -18,7 +18,8 @@ namespace DAT {
 		
 		float width = 350;
 		float height;
-		float x=-1000, y;
+		float x = -1000;
+		float y = 0;
 		
 		
 		list<ImguiItems::Item*> items;
