@@ -19,8 +19,8 @@ namespace MyOglWorldTransform {
         void SetScale(float scale);
         void SetScale(float scaleX,float scaleY,float scaleZ);
         void SetScale(const MyVectorV3::Vector3f&);
-        void SetRotation(float x, float y, float z,string order="XYZ");
-        void SetRotation(const MyVectorV3::Vector3f&, string order="XYZ");
+        void SetRotation(float x, float y, float z,string order="XYZ"); //angle in degree
+        void SetRotation(const MyVectorV3::Vector3f&, string order="XYZ"); //angle in degree
         void SetRotation(const MyMatrixV3::Quaternion& q);
         void SetPosition(float x, float y, float z);
         void SetPosition(const MyVectorV3::Vector3f& WorldPos);

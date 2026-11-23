@@ -20,6 +20,11 @@
 
 using namespace std;
 
+namespace Math
+{
+	inline constexpr float PI = 3.14159265358979323846f;
+}
+
 namespace MyMatrixV3 {
 
     class Matrix3f;

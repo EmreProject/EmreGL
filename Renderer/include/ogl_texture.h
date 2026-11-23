@@ -84,7 +84,7 @@ namespace MyTextureV2 {
 
 		vector<string> faceFileLocations;
 
-		GLuint texture;
+		GLuint texture = 0;
 		bool isLoad = false;
 	public:
 

@@ -539,8 +539,14 @@ namespace OglRenderer {
 							});
 
 						if (mesh_.personalData["errorMesh"] == "false") {
+							if (mesh_.geometry->isInstancedGeometry()) {
+								glDrawElementsInstanced(GL_TRIANGLES, mesh_.geometry->indices.size(), GL_UNSIGNED_INT, 0, mesh_.geometry->getInstanceCount());
+							}
+							else {
 
-							glDrawElements(GL_TRIANGLES, mesh_.geometry->indices.size(), GL_UNSIGNED_INT, 0);
+								glDrawElements(GL_TRIANGLES, mesh_.geometry->indices.size(), GL_UNSIGNED_INT, 0);
+							}
+							
 						}
 
 						// Make sure the VAO is not changed from the outside
@@ -645,7 +651,14 @@ namespace OglRenderer {
 
 						if (mesh_.personalData["errorMesh"] == "false") {
 
-							glDrawElements(GL_TRIANGLES, mesh_.geometry->indices.size(), GL_UNSIGNED_INT, 0);
+							if (mesh_.geometry->isInstancedGeometry()) {
+								glDrawElementsInstanced(GL_TRIANGLES, mesh_.geometry->indices.size(), GL_UNSIGNED_INT, 0, mesh_.geometry->getInstanceCount());
+							}
+							else {
+
+								glDrawElements(GL_TRIANGLES, mesh_.geometry->indices.size(), GL_UNSIGNED_INT, 0);
+							}
+
 						}
 
 						// Make sure the VAO is not changed from the outside
@@ -745,7 +758,12 @@ namespace OglRenderer {
 
 						if (mesh_.personalData["errorMesh"] == "false") {
 
-							glDrawElements(GL_TRIANGLES, mesh_.geometry->indices.size(), GL_UNSIGNED_INT, 0);
+							if (mesh_.geometry->isInstancedGeometry()) {
+								glDrawElementsInstanced(GL_TRIANGLES, mesh_.geometry->indices.size(), GL_UNSIGNED_INT, 0, mesh_.geometry->getInstanceCount());
+							}
+							else {
+								glDrawElements(GL_TRIANGLES, mesh_.geometry->indices.size(), GL_UNSIGNED_INT, 0);
+							}
 						}
 
 						// Make sure the VAO is not changed from the outside

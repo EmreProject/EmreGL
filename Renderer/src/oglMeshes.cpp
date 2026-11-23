@@ -1,5 +1,8 @@
 #include "oglMeshes.h"
 
+#include <regex>
+#include <set>
+
 
 namespace OglObject3D {
 
@@ -24,6 +27,69 @@ namespace OglObject3D {
 
 
 	BufferAttribute::BufferAttribute(){}
+	BufferAttribute::BufferAttribute(vector<MyVectorV3::Vector3f> values_) {
+
+		auto it = values_.begin();
+		for (; it != values_.end(); it++) {
+			this->values.push_back(static_cast<float>((*it)[0]));
+			this->values.push_back(static_cast<float>((*it)[1]));
+			this->values.push_back(static_cast<float>((*it)[2]));
+
+
+		}
+		this->count = 3;
+		this->value_type = "vec3";
+
+	}
+	BufferAttribute::BufferAttribute(vector<MyVectorV3::Vector4f> values_) {
+
+		auto it = values_.begin();
+		for (; it != values_.end(); it++) {
+
+		
+			this->values.push_back(static_cast<float>((*it)[0]));
+			this->values.push_back(static_cast<float>((*it)[1]));
+			this->values.push_back(static_cast<float>((*it)[2]));
+			this->values.push_back(static_cast<float>((*it)[3]));
+
+
+		}
+		this->count = 4;
+		this->value_type = "vec4";
+
+	}
+	BufferAttribute::BufferAttribute(vector<MyMatrixV3::Matrix3f> values_) {
+
+		auto it = values_.begin();
+		for (; it != values_.end(); it++) {
+			MyMatrixV3::Matrix3f mat = it->Transpose();
+			float* poi = &mat.m[0][0];
+
+			for (int i = 0; i < 9; i++) {
+				this->values.push_back(static_cast<float>(poi[i]));
+			}
+
+		}
+		this->count = 9;
+		this->value_type = "mat3";
+
+	}
+	BufferAttribute::BufferAttribute(vector<MyMatrixV3::Matrix4f> values_) {
+
+		auto it = values_.begin();
+		for (; it != values_.end(); it++) {
+			MyMatrixV3::Matrix4f mat = it->Transpose();
+			float* poi = &mat.m[0][0];
+
+			for (int i = 0; i < 16; i++) {
+				this->values.push_back(static_cast<float>(poi[i]));
+			}
+
+		}
+		this->count = 16;
+		this->value_type = "mat4";
+
+	}
 
 	InstancedAttribute::InstancedAttribute():BufferAttribute(){}
 
@@ -55,6 +121,39 @@ namespace OglObject3D {
 			if (count == 2) { type = "uvec2"; }
 			if (count == 3) { type = "uvec3"; }
 			if (count == 4) { type = "uvec4"; }
+		}
+
+		if (this->value_type == "uint") {
+
+			if (count == 1) { type = "uint"; }
+			if (count == 2) { type = "uvec2"; }
+			if (count == 3) { type = "uvec3"; }
+			if (count == 4) { type = "uvec4"; }
+		}
+
+
+		if (this->value_type == "uint") {
+
+			if (count == 1) { type = "uint"; }
+			if (count == 2) { type = "uvec2"; }
+			if (count == 3) { type = "uvec3"; }
+			if (count == 4) { type = "uvec4"; }
+		}
+
+		if (this->value_type == "vec3") {
+			type = "vec3";
+		}
+
+		if (this->value_type == "vec4") {
+			type = "vec4";
+		}	
+
+		if (this->value_type == "mat3") {
+			type = "mat3";
+		}
+
+		if (this->value_type == "mat4") {
+			type = "mat4";
 		}
 
 
@@ -101,7 +200,9 @@ namespace OglObject3D {
 			this->tangent = other.tangent;
 			this->bufferAttributes = other.bufferAttributes;
 			this->ssboAttributes = other.ssboAttributes;
-		
+			this->isInstanced = other.isInstanced;
+			this->instanceCount = other.instanceCount;
+			this->instancedBufferAttributes = other.instancedBufferAttributes;
 
 		}
 
@@ -117,6 +218,9 @@ namespace OglObject3D {
 			this->tangent = other.tangent;
 			this->bufferAttributes = other.bufferAttributes;
 			this->ssboAttributes = other.ssboAttributes;
+			this->isInstanced = other.isInstanced;
+			this->instanceCount = other.instanceCount;
+			this->instancedBufferAttributes = other.instancedBufferAttributes;
 
 
 		}
@@ -126,124 +230,69 @@ namespace OglObject3D {
 	}
 
 
-	void Geometry::setAttribute(string shaderName, BufferAttribute attribute) {
-
-		function<bool(int layoutToBeChecked)> isLayoutFree = [this](int layoutToBeChecked)->bool {
-
-			bool isFree = true;
-
-			if(bufferAttributes.size()>0){
-				auto it = bufferAttributes.begin();
-			
-				for (; it != bufferAttributes.end(); it++) {
-					if (it->layout_ == layoutToBeChecked) {
-						isFree = false;
-					}
-				}
-			
+	void Geometry::eraseAttributeIfAlreadyAdded(string shaderName) {
+		auto check = [&](BufferAttribute& att) {
+			if (att.shaderName == shaderName) {
+				return true;
 			}
-
-			if (instancedBufferAttributes.size() > 0) {
-
-				auto it = instancedBufferAttributes.begin();
-				for (; it != instancedBufferAttributes.end(); it++) {
-
-					if (it->layout_ == layoutToBeChecked) {
-						isFree = false;
-					}
-				}
-
+			else {
+				return false;
 			}
-			
-
-			if (layoutToBeChecked == position.layout_ ||
-				layoutToBeChecked == texcoord.layout_ ||
-				layoutToBeChecked == normal.layout_ ||
-				layoutToBeChecked == tangent.layout_) {
-				isFree = false;
-			}
-
-			return isFree;
 			};
 
-		int layout = -1;//start from 0
-		bool isFree = false;
-		while (!isFree) {
-			layout++;
-			isFree = isLayoutFree(layout);
+		auto it = bufferAttributes.begin();
+		for (; it != bufferAttributes.end(); it++) {
+			if (check(*it)) {
+				bufferAttributes.erase(it);
+				break;
+			}
 		}
 
-		attribute.layout_ = layout;
+
+		auto it2 = instancedBufferAttributes.begin();
+		for (; it2 != instancedBufferAttributes.end(); it2++) {
+			if (check(*it2)) {
+				instancedBufferAttributes.erase(it2);
+				break;
+			}
+		}
+
+	}
+
+
+	void Geometry::setAttribute(string shaderName, BufferAttribute attribute) {
+
+
+		attribute.layout_ = -1;//set to -1, because i will set layout from shader code, not from here
 		attribute.shaderName = shaderName;
+		eraseAttributeIfAlreadyAdded(shaderName);
 		this->bufferAttributes.insert(bufferAttributes.end(), attribute);
 
 
 	}
 
-	void Geometry::setAttribute(string shaderName, int layout, BufferAttribute attribute) {
-
-		attribute.layout_ = layout;
-		attribute.shaderName = shaderName;
-		this->bufferAttributes.insert(bufferAttributes.end(), attribute);
-	}
 
 	void Geometry::setInstancedAttribute(string shaderName, InstancedAttribute attribute) {
 
-		function<bool(int layoutToBeChecked)> isLayoutFree = [this](int layoutToBeChecked)->bool {
-
-			bool isFree = true;
-
-			if (bufferAttributes.size() > 0) {
-				auto it = bufferAttributes.begin();
-
-				for (; it != bufferAttributes.end(); it++) {
-					if (it->layout_ == layoutToBeChecked) {
-						isFree = false;
-					}
-				}
-
-			}
-
-			if (instancedBufferAttributes.size() > 0) {
-
-				auto it = instancedBufferAttributes.begin();
-				for (; it != instancedBufferAttributes.end(); it++) {
-
-					if (it->layout_ == layoutToBeChecked) {
-						isFree = false;
-					}
-				}
-
-			}
-
-
-			if (layoutToBeChecked == position.layout_ ||
-				layoutToBeChecked == texcoord.layout_ ||
-				layoutToBeChecked == normal.layout_ ||
-				layoutToBeChecked == tangent.layout_) {
-				isFree = false;
-			}
-
-			return isFree;
-			};
-
-		int layout = -1;//start from 0
-		bool isFree = false;
-		while (!isFree) {
-			layout++;
-			isFree = isLayoutFree(layout);
-		}
-
-		attribute.layout_ = layout;
+		attribute.layout_ = -1;
 		attribute.shaderName = shaderName;
+		eraseAttributeIfAlreadyAdded(shaderName);
 		this->instancedBufferAttributes.insert(instancedBufferAttributes.end(), attribute);
 
 
 	}
+	/*
 	void Geometry::setInstancedAttribute(string shaderName, int layout, InstancedAttribute attribute) {
 		attribute.layout_ = layout;
 		attribute.shaderName = shaderName;
 		this->instancedBufferAttributes.insert(instancedBufferAttributes.end(), attribute);
+
+	}
+*/
+
+	void Geometry::setInstanceCount(int count) {
+		this->instanceCount = count;
+		this->isInstanced = true;
 
 	}
 
@@ -1058,7 +1107,7 @@ namespace OglObject3D {
 
 		this->isCompiled_ = true;
 
-		
+		this->updateBufferGeometryLayout(geometry);
 		CreateShader();
 		BindShader();
 		setUniformLocations();
@@ -1217,75 +1266,45 @@ namespace OglObject3D {
 
 
 	}
-	int RawShaderMaterial::getLayoutNumber(string line) {
+	namespace {
+		map<string, int> readVertexInputLocations(const string& shaderSource) {
+			static const regex comments(R"(//[^\r\n]*|/\*[\s\S]*?\*/)");
+			static const regex inputDeclaration(
+				R"(\blayout\s*\(\s*location\s*=\s*([0-9]+)\s*\)\s*in\s+\w+\s+(\w+)\s*;)");
+			const string source = regex_replace(shaderSource, comments, " ");
 
-		int start = line.find("(");
-		int end = line.find(")");
-
-		string search = line.substr(start, end - start + 1);
-		string::size_type startNumber = search.find_first_of("0123456789");
-		string::size_type endNumber = search.find_last_of("0123456789");
-
-		istringstream iss;
-		iss.str(search.substr(startNumber, endNumber - startNumber + 1));
-
-		int ret;
-		iss >> ret;
-
-		return ret;
-	}
-
-
-	void RawShaderMaterial::setAttributeLayout(string line, int layout, Geometry* geometry) {
-
-
-		if (line.find("position") != string::npos) {
-			geometry->position.layout_ = layout;
-		}
-		else if (line.find("uv") != string::npos) {
-			geometry->texcoord.layout_ = layout;
-		}
-		else if (line.find("normal") != string::npos) {
-			geometry->normal.layout_ = layout;
-		}
-		else {
-
-			auto it = geometry->bufferAttributes.begin();
-			for (; it != geometry->bufferAttributes.end(); it++) {
-				if (line.find(it->shaderName) != string::npos) {
-					it->layout_ = layout;
-					break;
+			map<string, int> locations;
+			for (sregex_iterator input(source.begin(), source.end(), inputDeclaration), end;
+				input != end; ++input) {
+				int location;
+				istringstream number((*input)[1].str());
+				if (number >> location) {
+					locations.emplace((*input)[2].str(), location);
 				}
 			}
-
-			auto it2 = geometry->instancedBufferAttributes.begin();
-			for (; it2 != geometry->instancedBufferAttributes.end(); it2++) {
-				if (line.find(it2->shaderName) != string::npos) {
-					it2->layout_ = layout;
-					break;
-				}
-			}
-
+			return locations;
 		}
-		
 	}
 
-
-	void RawShaderMaterial::updateBufferGeometryLayout(Geometry* geometry){
-
-		istringstream iss;
-		iss.str(*vertexShaderText);
-
-		string line;
-		while (getline(iss, line, '\n')) {
-
-			if (line.find("layout") != string::npos) {
-				int layoutNumber = getLayoutNumber(line);
-				setAttributeLayout(line, layoutNumber, geometry);
+	void Material::updateBufferGeometryLayout(Geometry* geometry) {
+		const auto locations = readVertexInputLocations(*vertexShaderText);
+		const auto updateLayout = [&locations](BufferAttribute& attribute) {
+			const auto location = locations.find(attribute.shaderName);
+			if (location != locations.end()) {
+				attribute.layout_ = location->second;
 			}
+		};
 
+		updateLayout(geometry->position);
+		updateLayout(geometry->texcoord);
+		updateLayout(geometry->normal);
+		updateLayout(geometry->tangent);
+		for (auto& attribute : geometry->bufferAttributes) {
+			updateLayout(attribute);
 		}
-
+		for (auto& attribute : geometry->instancedBufferAttributes) {
+			updateLayout(attribute);
+		}
 	}
 
 
@@ -1297,7 +1316,7 @@ namespace OglObject3D {
 
 	void RawShaderMaterial::Compile(Geometry* geometry) {
 
-		this->updateBufferGeometryLayout(geometry);
+		
 		Material::Compile(geometry);
 		
 
@@ -1362,76 +1381,7 @@ namespace OglObject3D {
 
 	}
 
-	int LineMaterial::getLayoutNumber(string line) {
-
-		int start = line.find("(");
-		int end = line.find(")");
-
-		string search = line.substr(start, end - start + 1);
-		string::size_type startNumber = search.find_first_of("0123456789");
-		string::size_type endNumber = search.find_last_of("0123456789");
-
-		istringstream iss;
-		iss.str(search.substr(startNumber, endNumber - startNumber + 1));
-
-		int ret;
-		iss >> ret;
-
-		return ret;
-	}
-
-
-	void LineMaterial::setAttributeLayout(string line, int layout, Geometry* geometry) {
-
-
-		if (line.find("position") != string::npos) {
-			geometry->position.layout_ = layout;
-		}
-		else if (line.find("uv") != string::npos) {
-			geometry->texcoord.layout_ = layout;
-		}
-		else if (line.find("normal") != string::npos) {
-			geometry->normal.layout_ = layout;
-		}
-		else {
-
-			auto it = geometry->bufferAttributes.begin();
-			for (; it != geometry->bufferAttributes.end(); it++) {
-				if (line.find(it->shaderName) != string::npos) {
-					it->layout_ = layout;
-					break;
-				}
-			}
-
-			auto it2 = geometry->instancedBufferAttributes.begin();
-			for (; it2 != geometry->instancedBufferAttributes.end(); it2++) {
-				if (line.find(it2->shaderName) != string::npos) {
-					it2->layout_ = layout;
-					break;
-				}
-			}
-
-		}
-
-	}
-
-
-	void LineMaterial::updateBufferGeometryLayout(Geometry* geometry) {
-
-		istringstream iss;
-		iss.str(*vertexShaderText);
-
-		string line;
-		while (getline(iss, line, '\n')) {
-
-			if (line.find("layout") != string::npos) {
-				int layoutNumber = getLayoutNumber(line);
-				setAttributeLayout(line, layoutNumber, geometry);
-			}
-
-		}
-
-	}
+	
 
 	void LineMaterial::setColor(float r, float g, float b){
 		this->setUniform("lineColor", MyVectorV3::Vector3f(r, g, b));
@@ -1450,7 +1400,7 @@ namespace OglObject3D {
 	}
 
 	void LineMaterial::Compile(Geometry* geometry) {
-		this->updateBufferGeometryLayout(geometry);
+		
 		Material::Compile(geometry);
 	}
 
@@ -1551,25 +1501,66 @@ namespace OglObject3D {
 	}
 
 	void MeshBasicMaterial::replaceShaderHooks(Geometry* geometry) {
+		auto locations = readVertexInputLocations(*vertexShaderText);
+		set<int> usedLocations;
+		for (const auto& input : locations) {
+			usedLocations.insert(input.second);
+		}
 
+		int nextLocation = 0;
+		const auto addAttribute = [&](BufferAttribute& attribute) {
+			const auto location = locations.find(attribute.shaderName);
+			if (location != locations.end()) {
+				attribute.layout_ = location->second;
+				return;
+			}
 
-		attributeHook.addAttributeShaderCode(geometry->position.getAttributeNameForHook());
-		attributeHook.addAttributeShaderCode(geometry->texcoord.getAttributeNameForHook());
-		attributeHook.addAttributeShaderCode(geometry->normal.getAttributeNameForHook());
-		attributeHook.addAttributeShaderCode(geometry->tangent.getAttributeNameForHook());
+			int newNextLocation = -1;
 
-		list<BufferAttribute> extraAttributes = geometry->getExtraBufferAttributes();
-		for_each(extraAttributes.begin(), extraAttributes.end(), [this](BufferAttribute& buff) {
-			attributeHook.addAttributeShaderCode(buff.getAttributeNameForHook());
-			});
+			if (attribute.value_type == "mat3") {
+				while (usedLocations.count(nextLocation) || usedLocations.count(nextLocation+1)
+					|| usedLocations.count(nextLocation+2)) {
+					++nextLocation;
+				}
 
+				newNextLocation = nextLocation + 3;
+			}
+			else if (attribute.value_type == "mat4") {
+				while (usedLocations.count(nextLocation) || usedLocations.count(nextLocation + 1)
+					|| usedLocations.count(nextLocation + 2) || usedLocations.count(nextLocation + 3)) {
+					++nextLocation;
+				}
 
-		list<InstancedAttribute> instancedAttributes = geometry->getInstancedBufferAttributes();
-		for_each(instancedAttributes.begin(), instancedAttributes.end(), [this](InstancedAttribute& buff) {
-			attributeHook.addAttributeShaderCode(buff.getAttributeNameForHook());
-			});
+				newNextLocation = nextLocation + 4;
+			}
+			else {
 
+				while (usedLocations.count(nextLocation)) {
+					++nextLocation;
+				}
 
+				newNextLocation = nextLocation + 1;
+			}
+			attribute.layout_ = nextLocation;
+			nextLocation = newNextLocation;
+			locations.emplace(attribute.shaderName, attribute.layout_);
+			attributeHook.addAttributeShaderCode(attribute.getAttributeNameForHook());
+		};
+
+		addAttribute(geometry->position);
+		addAttribute(geometry->texcoord);
+		addAttribute(geometry->normal);
+		addAttribute(geometry->tangent);
+
+		auto extraAttributes = geometry->getExtraBufferAttributes();
+		for (auto& attribute : extraAttributes) {
+			addAttribute(attribute);
+		}
+
+		auto instancedAttributes = geometry->getInstancedBufferAttributes();
+		for (auto& attribute : instancedAttributes) {
+			addAttribute(attribute);
+		}
 
 		attributeHook.Replace(vertexShaderText);
 		commonHook.Replace(vertexShaderText);
@@ -1721,7 +1712,6 @@ namespace OglObject3D {
 		
 
 		this->isCompiled_ = true;
-
 		replaceShaderHooks(geometry);
 		eraseRemainingHooks();
 		
@@ -2338,6 +2328,12 @@ namespace OglObject3D {
 		
 	}
 
+	void Mesh::SetMatrix(MyMatrixV3::Matrix4f matrix) {
+
+		this->matrix = matrix;
+		this->matrix.Decompose(this->position, rotation, this->scale);
+	}
+
 	MyMatrixV3::Matrix4f Mesh::GetMatrix() {
 
 		this->worldTransform.SetPosition(this->position);
@@ -2477,10 +2473,10 @@ namespace OglObject3D {
 
 		MeshStandardMaterial* standardMaterial = dynamic_cast<MeshStandardMaterial*>(this->material);
 		RawShaderMaterial* rawShaderMaterial = dynamic_cast<RawShaderMaterial*>(this->material);
+		MeshBasicMaterial* meshBasicMaterial = dynamic_cast<MeshBasicMaterial*>(this->material);
 
-		if (rawShaderMaterial != nullptr) {
-			rawShaderMaterial->updateBufferGeometryLayout(this->geometry);
-		}
+		material->updateBufferGeometryLayout(this->geometry);
+		
 
 		if (standardMaterial != nullptr) {
 
@@ -2611,6 +2607,34 @@ namespace OglObject3D {
 				glEnableVertexAttribArray(it->layout_);
 				glVertexAttribIPointer(it->layout_, it->count, GL_UNSIGNED_INT, 0, 0);
 			}
+			else if (it->value_type == "vec3") {
+				glBindBuffer(GL_ARRAY_BUFFER, m_Buffers[i + 3]);
+				glBufferData(GL_ARRAY_BUFFER, sizeof(it->values[0]) * it->values.size(), &it->values[0], GL_STATIC_DRAW);
+				glEnableVertexAttribArray(it->layout_);
+				glVertexAttribPointer(it->layout_, 3, GL_FLOAT, GL_FALSE, 0, 0);
+			}
+			else if (it->value_type == "vec4") {
+				glBindBuffer(GL_ARRAY_BUFFER, m_Buffers[i + 3]);
+				glBufferData(GL_ARRAY_BUFFER, sizeof(it->values[0]) * it->values.size(), &it->values[0], GL_STATIC_DRAW);
+				glEnableVertexAttribArray(it->layout_);
+				glVertexAttribPointer(it->layout_, 4, GL_FLOAT, GL_FALSE, 0, 0);
+			}
+			else if (it->value_type == "mat3") {
+				glBindBuffer(GL_ARRAY_BUFFER, m_Buffers[i + 3]);
+				glBufferData(GL_ARRAY_BUFFER, sizeof(it->values[0])* it->values.size(), &it->values[0], GL_STATIC_DRAW);
+				for (int j = 0; j < 3; j++) {
+					glEnableVertexAttribArray(it->layout_ + j);
+					glVertexAttribPointer(it->layout_ + j, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 9, (void*)(sizeof(float) * 3 * j));
+				}	
+			}
+			else if (it->value_type == "mat4") {
+				glBindBuffer(GL_ARRAY_BUFFER, m_Buffers[i + 3]);
+				glBufferData(GL_ARRAY_BUFFER, sizeof(it->values[0]) * it->values.size(), &it->values[0], GL_STATIC_DRAW);
+				for (int j = 0; j < 4; j++) {
+					glEnableVertexAttribArray(it->layout_ + j);
+					glVertexAttribPointer(it->layout_ + j, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 16, (void*)(sizeof(float) * 4 * j));
+				}
+			}
 			
 			
 			it++;
@@ -2654,6 +2678,40 @@ namespace OglObject3D {
 				glEnableVertexAttribArray(it2->layout_);
 				glVertexAttribIPointer(it2->layout_, it2->count, GL_UNSIGNED_INT, 0, 0);
 				glVertexAttribDivisor(it2->layout_, 1);
+			}
+			else if (it2->value_type == "vec3") {
+				glBindBuffer(GL_ARRAY_BUFFER, m_Buffers[i + indexOffset]);
+				glBufferData(GL_ARRAY_BUFFER, sizeof(it2->values[0]) * it2->values.size(), &it2->values[0], GL_STATIC_DRAW);
+				glEnableVertexAttribArray(it2->layout_);
+				glVertexAttribPointer(it2->layout_, 3, GL_FLOAT, GL_FALSE, 0, 0);
+				glVertexAttribDivisor(it2->layout_, 1);
+
+			}
+			else if (it2->value_type == "vec4") {
+				glBindBuffer(GL_ARRAY_BUFFER, m_Buffers[i + indexOffset]);
+				glBufferData(GL_ARRAY_BUFFER, sizeof(it2->values[0]) * it2->values.size(), &it2->values[0], GL_STATIC_DRAW);
+				glEnableVertexAttribArray(it2->layout_);
+				glVertexAttribPointer(it2->layout_, 4, GL_FLOAT, GL_FALSE, 0, 0);
+				glVertexAttribDivisor(it2->layout_, 1);
+
+			}
+			else if (it2->value_type == "mat3") {
+				glBindBuffer(GL_ARRAY_BUFFER, m_Buffers[i + indexOffset]);
+				glBufferData(GL_ARRAY_BUFFER, sizeof(it2->values[0]) * it2->values.size(), &it2->values[0], GL_STATIC_DRAW);
+				for (int j = 0; j < 3; j++) {
+					glEnableVertexAttribArray(it2->layout_ + j);
+					glVertexAttribPointer(it2->layout_ + j, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 9, (void*)(sizeof(float) * 3 * j));
+					glVertexAttribDivisor(it2->layout_ + j, 1);
+				}
+			}
+			else if (it2->value_type == "mat4") {
+				glBindBuffer(GL_ARRAY_BUFFER, m_Buffers[i + indexOffset]);
+				glBufferData(GL_ARRAY_BUFFER, sizeof(it2->values[0]) * it2->values.size(), &it2->values[0], GL_STATIC_DRAW);
+				for (int j = 0; j < 4; j++) {
+					glEnableVertexAttribArray(it2->layout_ + j);
+					glVertexAttribPointer(it2->layout_ + j, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 16, (void*)(sizeof(float) * 4 * j));
+					glVertexAttribDivisor(it2->layout_ + j, 1);
+				}
 			}
 
 
@@ -2710,10 +2768,20 @@ namespace OglObject3D {
 	
 	void Mesh::Render() {
 
+
+		
+
 		//compile if not
 		if (!this->material->isCompiled()) {
 			material->Compile(geometry);
 		}
+
+
+		if (!this->isLoaded()) {
+			this->LoadMesh();
+		}
+
+		
 
 		//culling for assimp
 		if (isAssimpMesh) {
@@ -2759,8 +2827,13 @@ namespace OglObject3D {
 			});
 
 		if (this->personalData["errorMesh"] == "false") {
+			if (geometry->isInstancedGeometry()) {
+				glDrawElementsInstanced(GL_TRIANGLES, geometry->indices.size(), GL_UNSIGNED_INT, 0, geometry->getInstanceCount());
+			}
+			else {
 
-		glDrawElements(GL_TRIANGLES, geometry->indices.size(), GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, geometry->indices.size(), GL_UNSIGNED_INT, 0);
+			}
 		}
 		
 		// Make sure the VAO is not changed from the outside
@@ -2828,6 +2901,10 @@ namespace OglObject3D {
 			material->Compile(geometry);
 		}
 
+		if (!this->isLoaded()) {
+			this->LoadMesh();
+
+		}
 		//binding shader
 		material->BindShader();
 		material->setUniformLocations();
@@ -3052,6 +3129,9 @@ namespace OglObject3D {
 			material->Compile(geometry);
 		}
 
+		if (!this->isLoaded()) {
+			this->LoadMesh();
+		}
 
 		//binding shader
 		material->BindShader();

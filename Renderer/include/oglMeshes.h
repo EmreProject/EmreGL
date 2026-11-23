@@ -62,6 +62,8 @@ namespace OglObject3D {
 			this->value_type = "float";
 		}
 
+		
+
 	public:
 
 		vector<float> values;//hold everything like int, uint as float
@@ -72,7 +74,7 @@ namespace OglObject3D {
 
 		BufferAttribute();
 		template<typename t>
-		BufferAttribute(vector<t> values_, int count_) {
+		BufferAttribute(vector<t> values_, int count_) { 
 
 			auto it = values_.begin();
 			for(; it != values_.end(); it++) {
@@ -82,6 +84,13 @@ namespace OglObject3D {
 
 			setAttributeType<t>();
 		}
+		BufferAttribute(vector<MyVectorV3::Vector3f> values_);
+		BufferAttribute(vector<MyVectorV3::Vector4f> values_);
+		BufferAttribute(vector<MyMatrixV3::Matrix3f> values_);
+		BufferAttribute(vector<MyMatrixV3::Matrix4f> values_);
+
+
+
 
 		string getAttributeNameForHook();
 
@@ -96,6 +105,11 @@ namespace OglObject3D {
 		template<typename t>
 		InstancedAttribute(vector<t> values_, int count_) : BufferAttribute(values_,count_){
 		}
+
+		InstancedAttribute(vector<MyVectorV3::Vector3f> values_) :BufferAttribute(values_) {}
+		InstancedAttribute(vector<MyVectorV3::Vector4f> values_):BufferAttribute(values_){}
+		InstancedAttribute(vector<MyMatrixV3::Matrix3f> values_):BufferAttribute(values_){}
+		InstancedAttribute(vector<MyMatrixV3::Matrix4f> values_):BufferAttribute(values_){}
 
 
 	};
@@ -131,6 +145,11 @@ namespace OglObject3D {
 		list<InstancedAttribute> instancedBufferAttributes;
 		list<SSBOAttribute> ssboAttributes; //ssbo attributes if i set
 
+		
+		void eraseAttributeIfAlreadyAdded(string shaderName);
+
+		bool isInstanced = false;
+		int instanceCount = 1;
 	public:
 
 
@@ -152,17 +171,20 @@ namespace OglObject3D {
 		list<InstancedAttribute> getInstancedBufferAttributes();
 		list<SSBOAttribute> getExtraSSBOAttributes();
 		void setAttribute(string shaderName, BufferAttribute attribute);
-		void setAttribute(string shaderName, int layout, BufferAttribute attribute);
+		//void setAttribute(string shaderName, int layout, BufferAttribute attribute);
 		void setInstancedAttribute(string shaderName, InstancedAttribute attribute);
-		void setInstancedAttribute(string shaderName, int layout, InstancedAttribute attribute);
+		//void setInstancedAttribute(string shaderName, int layout, InstancedAttribute attribute);
 		void addSSBOAttribute(SSBOAttribute attribute);
 		
-		
+		bool isInstancedGeometry() { return isInstanced; }
+		int  getInstanceCount() { return instanceCount; }
+		void setInstanceCount(int count);
 
 		int getBufferNumber();
 		bool isAttributeExist(string shaderName);
 
 		virtual GeometryType GetGeometryType() = 0;
+		friend class Material;
 		friend class RawShaderMaterial;
 		friend class LineMaterial;
 
@@ -311,6 +333,9 @@ namespace OglObject3D {
 		string* fragmentShaderText;
 		string* geometryShaderText; //optional
 
+		void updateBufferGeometryLayout(Geometry* geometry);
+
+
 		MyOglShader::BaseShader shader;
 		bool isCompiled_ = false;
 
@@ -435,10 +460,7 @@ namespace OglObject3D {
 
 	protected:
 
-		int getLayoutNumber(string line);
-		void setAttributeLayout(string line,int layout, Geometry* geometry);
-		void updateBufferGeometryLayout(Geometry* geometry);
-
+	
 		static string LoadShaderFile(string fileLocation);
 
 	public:
@@ -480,10 +502,6 @@ namespace OglObject3D {
 
 	private:
 
-
-		int getLayoutNumber(string line);
-		void setAttributeLayout(string line, int layout, Geometry* geometry);
-		void updateBufferGeometryLayout(Geometry* geometry);
 
 
 	public:
@@ -778,6 +796,7 @@ namespace OglObject3D {
 		void RotateOnWorldAxis(const MyMatrixV3::Matrix4f& rotation);
 		void RotateOnWorldAxis(const MyMatrixV3::Quaternion& q);
 		void ApplyMatrix(MyMatrixV3::Matrix4f matrix); //applies on model matrix
+		void SetMatrix(MyMatrixV3::Matrix4f matrix);
 		MyMatrixV3::Matrix4f GetMatrix();
 			
 		virtual void LoadMesh();

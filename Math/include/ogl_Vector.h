@@ -193,6 +193,16 @@ namespace MyVectorV3 {
         }
 
 
+		float& operator[](int i)
+		{
+            switch (i) {
+			case 0: return x;
+			case 1: return y;
+			case 2: return z;
+			default: throw std::out_of_range("Index out of range for Vector3f");
+            }
+		}
+
         Vector3f Cross(const Vector3f& v) const;
 
         float Dot(const Vector3f& v) const
@@ -297,6 +307,19 @@ namespace MyVectorV3 {
         {
             float ret = x * v.x + y * v.y + z * v.z + w * v.w;
             return ret;
+        }
+
+
+        float& operator[](int i)
+        {
+            switch (i) {
+            case 0: return x;
+            case 1: return y;
+            case 2: return z;
+            case 3: return w;
+
+            default: throw std::out_of_range("Index out of range for Vector4f");
+            }
         }
 
         bool operator==(const Vector4f& r)

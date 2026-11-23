@@ -92,9 +92,7 @@ namespace OglScene{
 
 
 			if (!meshIsAlreadyAdded(mesh)) {
-				if (!mesh->isLoaded()) {
-				mesh->LoadMesh();
-				}
+				
 				this->meshes.insert(this->meshes.end(), mesh);
 			}
 			else {
@@ -108,10 +106,6 @@ namespace OglScene{
 
 
 			if (!meshIsAlreadyAdded(&mesh)) {
-
-				if (!mesh.isLoaded()) {
-					mesh.LoadMesh();
-				}
 
 				this->meshes.insert(this->meshes.end(), &mesh);
 
@@ -150,9 +144,7 @@ namespace OglScene{
 
 
 			if (!meshIsAlreadyAdded(mesh)) {
-				if (!mesh->isLoaded()) {
-				mesh->LoadMesh();
-				}
+				
 
 				this->meshes.insert(this->meshes.end(), mesh);
 			}
@@ -167,9 +159,7 @@ namespace OglScene{
 
 
 			if (!meshIsAlreadyAdded(&mesh)) {
-				if (!mesh.isLoaded()) {
-					mesh.LoadMesh();
-				}
+				
 
 				this->meshes.insert(this->meshes.end(), &mesh);
 			}
@@ -212,10 +202,7 @@ namespace OglScene{
 
 
 			if (!meshIsAlreadyAdded(line)) {
-				if (!line->isLoaded()) {
-					line->LoadMesh();
-				}
-
+				
 				this->meshes.insert(this->meshes.end(), line);
 			}
 			else {
@@ -229,9 +216,7 @@ namespace OglScene{
 
 
 			if (!meshIsAlreadyAdded(&line)) {
-				if (!line.isLoaded()) {
-					line.LoadMesh();
-				}
+				
 
 				this->meshes.insert(this->meshes.end(), &line);
 			}
@@ -279,10 +264,11 @@ namespace OglScene{
 					mesh.isAssimpMesh = true;
 
 					
-					
+					/*
 					if (!mesh.isLoaded()) {
 					mesh.LoadMesh();
 					}
+					*/
 					
 					this->meshes.insert(this->meshes.end(), &mesh);
 					});

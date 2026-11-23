@@ -10,8 +10,6 @@
 #include "oglControls.h"
 
 
-
-
 	int main() {
 
 
@@ -84,8 +82,8 @@
 
 		//Rawshader material
 		OglObject3D::RawShaderMaterial material2;
-		string vertexShader1 = OglObject3D::RawShaderMaterial::LoadVertexShaderFromFile(SANDBOX_PATH "/04_basic_rendering/shaders/final.vert");
-		string fragmentShader1 = OglObject3D::RawShaderMaterial::LoadFragmentShaderFromFile(SANDBOX_PATH "/04_basic_rendering/shaders/final.frag");
+		string vertexShader1 = OglObject3D::RawShaderMaterial::LoadVertexShaderFromFile(SANDBOX_PATH "/04_render_target_example/shaders/final.vert");
+		string fragmentShader1 = OglObject3D::RawShaderMaterial::LoadFragmentShaderFromFile(SANDBOX_PATH "/04_render_target_example/shaders/final.frag");
 		material2.setVertexShader(vertexShader1);
 		material2.setFragmentShader(fragmentShader1);
 		material2.setWireframe(false);
@@ -124,8 +122,8 @@
 		OglObject3D::PlaneGeometry prePlane(2, 2);
 
 		OglObject3D::RawShaderMaterial preMaterial;
-		string preVertexShader = OglObject3D::RawShaderMaterial::LoadVertexShaderFromFile(SANDBOX_PATH "/04_basic_rendering/shaders/init.vert");
-		string preFragmentShader = OglObject3D::RawShaderMaterial::LoadFragmentShaderFromFile(SANDBOX_PATH "/04_basic_rendering/shaders/init.frag");
+		string preVertexShader = OglObject3D::RawShaderMaterial::LoadVertexShaderFromFile(SANDBOX_PATH "/04_render_target_example/shaders/init.vert");
+		string preFragmentShader = OglObject3D::RawShaderMaterial::LoadFragmentShaderFromFile(SANDBOX_PATH "/04_render_target_example/shaders/init.frag");
 		preMaterial.setVertexShader(preVertexShader);
 		preMaterial.setFragmentShader(preFragmentShader);
 		OglObject3D::Mesh preMesh(prePlane, preMaterial);
@@ -157,8 +155,8 @@
 
 
 		OglObject3D::RawShaderMaterial preMaterial2;
-		string preVertexShader2 = OglObject3D::RawShaderMaterial::LoadVertexShaderFromFile(SANDBOX_PATH "/04_basic_rendering/shaders/init.vert");
-		string preFragmentShader2 = OglObject3D::RawShaderMaterial::LoadFragmentShaderFromFile(SANDBOX_PATH "/04_basic_rendering/shaders/init.frag");
+		string preVertexShader2 = OglObject3D::RawShaderMaterial::LoadVertexShaderFromFile(SANDBOX_PATH "/04_render_target_example/shaders/init.vert");
+		string preFragmentShader2 = OglObject3D::RawShaderMaterial::LoadFragmentShaderFromFile(SANDBOX_PATH "/04_render_target_example/shaders/init.frag");
 		preMaterial2.setVertexShader(preVertexShader2);
 		preMaterial2.setFragmentShader(preFragmentShader2);
 		OglObject3D::Mesh preMesh2(prePlane, preMaterial2);
@@ -175,8 +173,8 @@
 
 		OglObject3D::PlaneGeometry planeGeometry(2, 2, 100, 100);
 		OglObject3D::RawShaderMaterial preMaterial3;
-		string preVertexShader3 = OglObject3D::RawShaderMaterial::LoadVertexShaderFromFile(SANDBOX_PATH "/04_basic_rendering/shaders/final.vert");
-		string preFragmentShader3 = OglObject3D::RawShaderMaterial::LoadFragmentShaderFromFile(SANDBOX_PATH "/04_basic_rendering/shaders/final.frag");
+		string preVertexShader3 = OglObject3D::RawShaderMaterial::LoadVertexShaderFromFile(SANDBOX_PATH "/04_render_target_example/shaders/final.vert");
+		string preFragmentShader3 = OglObject3D::RawShaderMaterial::LoadFragmentShaderFromFile(SANDBOX_PATH "/04_render_target_example/shaders/final.frag");
 		preMaterial3.setVertexShader(preVertexShader3);
 		preMaterial3.setFragmentShader(preFragmentShader3);
 
