@@ -18,6 +18,8 @@
 #include <list>
 #include <functional>
 #include <algorithm>
+#include <concepts>
+#include <utility>
 
 using namespace std;
 
@@ -76,7 +78,39 @@ namespace ImguiItems {
 		}
 	};
 
+	class ButtonItem :public Item {
 
+	private:
+
+	public:
+
+		function<void()> clickFunction = []() {};
+
+		ButtonItem(string name_):Item(name_){}
+
+		void Render() {
+			if (ImGui::Button(name.c_str())) {
+
+				this->clickFunction();
+			}
+		}
+	};
+
+	class SeperatorItem :public Item {
+
+
+	private:
+
+	public:
+
+		SeperatorItem(string name_):Item(name_){}
+
+		void Render() {
+
+			ImGui::SeparatorText(name.c_str());
+		}
+
+	};
 
 	class DropdownItem :public Item {
 
@@ -85,22 +119,23 @@ namespace ImguiItems {
 
 	public:
 
-		vector<const char*> options;
+		vector<string> options;
 		int currentIndex = 0;
 		function<void(string)> onChangeFunc;
 
-		DropdownItem(string name_, vector<const char*> options_) :Item(name_),
-			options(options_){
-		
-			onChangeFunc = [](string choosenOption) {};
 
+		DropdownItem(std::string name_, std::vector<std::string> options_)
+			: Item(name_), options(std::move(options_))
+		{
+			onChangeFunc = [](std::string chosenOption) {};
 		}
 
 
-		string getChoosenValue() {
-
-			return string(options[currentIndex]);
-
+		std::string getChoosenValue() const {
+			if (currentIndex < 0 || static_cast<std::size_t>(currentIndex) >= options.size()) {
+				return {};
+			}
+			return options[currentIndex];
 		}
 
 		DropdownItem& onChange(function<void(string)> onChangeFunc_) {
@@ -110,40 +145,67 @@ namespace ImguiItems {
 			return *this;
 		}
 
-		void Render() {
-
-
-			bool changedThisFrame = ImGui::Combo(name.c_str(), &currentIndex, &options[0], static_cast<int>(options.size()));
-		
-			if (changedThisFrame) {
-
-				string choosen(options[currentIndex]);
-
-				onChangeFunc(choosen);
+		void Render() override {
+			if (options.empty()) {
+				return;
 			}
 
+			std::vector<const char*> labels;
+			labels.reserve(options.size());
+
+			for (const std::string& option : options) {
+				labels.push_back(option.c_str());
+			}
+
+			if (ImGui::Combo(name.c_str(), &currentIndex,
+				labels.data(), static_cast<int>(labels.size()))) {
+				onChangeFunc(options[currentIndex]);
+			}
 		}
 	};
 
 
-	
+	template<Number t>
 	class SliderItem : public Item{
 
 	private:
 
+		function<bool()> RenderImguiSlider_;
 
+		void setRenderImguiSliderFunc() {
+			RenderImguiSlider_ = [this]() -> bool {
+				if constexpr (std::same_as<t, int>) {
+					return ImGui::SliderInt(name.c_str(), value, min, max);
+				}
+				else {
+					static_assert(std::same_as<t, float> || std::same_as<t, double>,
+						"SliderItem supports only int, float, and double");
+
+					std::string format = "%." + std::to_string(digitAfterDot) + "f";
+
+					if constexpr (std::same_as<t, float>) {
+						return ImGui::SliderFloat(name.c_str(), value, min, max,
+							format.c_str());
+					}
+					else {
+						return ImGui::SliderScalar(name.c_str(), ImGuiDataType_Double,
+							value, &min, &max, format.c_str());
+					}
+				}
+				};
+		}
 	public:
 
-		float* value;
-		float min;
-		float max;
-		float digitAfterDot;
+		t* value;
+		t min;
+		t max;
+		int digitAfterDot;
 
 		function<void()> onChangeFunc;
 		function<void()> onChangeFinishedFunc;
 
 
-		SliderItem(string name_, float* value_, float min_, float max_,int digitAfterDot_=5) {
+		SliderItem(string name_, t* value_, t min_, t max_,int digitAfterDot_=5) {
 
 			this->name = name_;
 			this->value = value_;
@@ -153,6 +215,8 @@ namespace ImguiItems {
 		
 			onChangeFunc = []() {};
 			onChangeFinishedFunc = []() {};
+
+			setRenderImguiSliderFunc();
 
 		}
 
@@ -173,10 +237,8 @@ namespace ImguiItems {
 
 		void Render() {
 
-			ostringstream oss;
-			oss << "%." << digitAfterDot << "f";
-			bool changedThisFrame = ImGui::SliderFloat(this->name.c_str(), (float*)(value),
-				(float)(min), (float)(max), oss.str().c_str());
+			
+			bool changedThisFrame = RenderImguiSlider_();
 			bool finishedEditing = ImGui::IsItemDeactivatedAfterEdit();
 
 
@@ -208,10 +270,10 @@ namespace ImguiItems {
 			for_each(items.begin(), items.end(), [](Item* item) {delete item; });
 		}
 
-	
-		ImguiItems::SliderItem& add(string name, float* number, float min, float max,int digitAfterDot=5) {
+		template<Number t>
+		ImguiItems::SliderItem<t>& add(string name, t* number, t min, t max,int digitAfterDot=5) {
 
-			ImguiItems::SliderItem* item = new ImguiItems::SliderItem(name, number, min, max, digitAfterDot);
+			ImguiItems::SliderItem<t>* item = new ImguiItems::SliderItem<t>(name, number, min, max, digitAfterDot);
 			items.insert(items.end(), item);
 
 			return *item;
@@ -227,7 +289,7 @@ namespace ImguiItems {
 			return *item;
 		}
 
-		ImguiItems::DropdownItem& add(string name, vector<const char*> options_) {
+		ImguiItems::DropdownItem& add(string name, vector<string> options_) {
 
 			ImguiItems::DropdownItem* item = new ImguiItems::DropdownItem(name, options_);
 			items.insert(items.end(), item);

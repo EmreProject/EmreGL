@@ -800,6 +800,7 @@ namespace OglObject3D {
 		MyMatrixV3::Matrix4f GetMatrix();
 			
 		virtual void LoadMesh();
+		void ResetBuffers();//if buferr attributes changed call it to delete buffer and load mesh again
 		bool isLoaded();
 
 		template<typename t>

@@ -1,0 +1,11 @@
+Model Information:
+* title:	CIRI
+* source:	https://sketchfab.com/3d-models/ciri-b16021846fa84b82ad72dc7feb6f62c8
+* author:	Cradle of the Cube (https://sketchfab.com/Observer_Terminator)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "CIRI" (https://sketchfab.com/3d-models/ciri-b16021846fa84b82ad72dc7feb6f62c8) by Cradle of the Cube (https://sketchfab.com/Observer_Terminator) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

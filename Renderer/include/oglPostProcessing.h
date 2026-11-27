@@ -164,7 +164,7 @@ namespace OglPostProcessing {
 		WeightedBlendedRenderPass(OglScene::Scene& scene, 
 				MyCamera::PerspectiveCamera& camera);
 	
-
+		void SetActiveScene(OglScene::Scene& scene);
 		MyTextureV2::Texture getOutputTexture();
 		void Render(OglRenderer::Renderer*);
 		

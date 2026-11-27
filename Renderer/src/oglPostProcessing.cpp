@@ -177,6 +177,10 @@ namespace OglPostProcessing {
 		compositeScene.add(&quadMesh);
 	}
 
+	void WeightedBlendedRenderPass::SetActiveScene(OglScene::Scene& scene) {
+		wholeScene = &scene;
+	}
+
 	void WeightedBlendedRenderPass::SetRenderTargets() {
 
 		transparentRT = OglRenderTarget::RenderTarget(OglWindow::Window::width, OglWindow::Window::height);

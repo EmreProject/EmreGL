@@ -27,7 +27,14 @@ int main() {
 	//https://github.com/mrdoob/three.js/blob/master/examples/webgl_buffergeometry_instancing.html
 
 	//Scene
-	OglScene::Scene scene;
+
+	OglScene::Scene scene1;//rawshadermaterial
+	OglScene::Scene scene2;//meshbasicmaterial
+	OglScene::Scene scene3;//meshstandardmaterial
+	OglScene::Scene scene4;//assimp static model
+	OglScene::Scene scene5;//assimp animated model
+
+
 
 
 	//window
@@ -67,7 +74,7 @@ int main() {
 	dirLight1.AmbientIntensity = 0.2;
 	dirLight1.setWorldDirection(0, -1, -1);
 
-	list<OglObject3D::Mesh&> meshList;
+	list<std::reference_wrapper<OglObject3D::Mesh>> meshList;
 //INSTANCING USING MESH WITH INSTANCE ATTRIBUTE ON GEOMETRY------------------------
 	
 	OglObject3D::BoxGeometry boxGeometry(0.01, 0.01, 0.01,10,10,10);
@@ -107,6 +114,7 @@ int main() {
 
 	float x = 0.0f, y = 0.0f, z = 0.0f;
 	box1.rotation.SetFromEuler(x, y, z);
+	scene1.add(box1);
 
 
 
@@ -127,7 +135,7 @@ int main() {
 		});
 	OglObject3D::Mesh box2(boxGeometry, meshBasicMaterial1);
 	meshList.push_back(box2);
-
+	scene2.add(box2);
 
 
 	//MeshStandardMaterial
@@ -150,20 +158,25 @@ int main() {
 		});
 	OglObject3D::Mesh box3(boxGeometry, meshStandardMaterial1);
 	meshList.push_back(box3);
+	scene3.add(box3);
 
 
 
 	//Model
+	OglAssimp::ModelLoader::ModelData* staticModel;
+	OglAssimp::ModelLoader::ModelData* animatedModel;
+
 	OglAssimp::ModelLoader modelLoader;
 	OglAssimp::AnimationMixer* mixer;
 	OglAssimp::AnimationClip* animationZero = nullptr;
-	/*
-	modelLoader.Load(ENGINE_ASSETS_DIR "/test/models/paichan2/scene.gltf",
+	
+	modelLoader.Load(ENGINE_ASSETS_DIR "/test/models/yennefer/scene.gltf",
 		[&](OglAssimp::ModelLoader::ModelData& modelData) {
 
 			modelData.position = MyVectorV3::Vector3f(0, 0, 0);
 			modelData.scale = MyVectorV3::Vector3f(0.3, 0.3, 0.3);
-			scene.add(modelData);
+			scene4.add(modelData);
+			staticModel = &modelData;
 
 			for_each(modelData.meshes.begin(), modelData.meshes.end(), [&](OglObject3D::Mesh& mesh) {
 
@@ -186,10 +199,10 @@ int main() {
 					});
 
 				}); });
-	*/
+	
 
-	/*
-	modelLoader.Load(ENGINE_ASSETS_DIR "/test/models/epona/scene.gltf",
+	
+	modelLoader.Load(ENGINE_ASSETS_DIR "/test/models/pubg_sara_animated/scene.gltf",
 		[&](OglAssimp::ModelLoader::ModelData& modelData) {
 
 
@@ -202,7 +215,8 @@ int main() {
 			modelData.position = MyVectorV3::Vector3f(0, 0, 0);
 			modelData.scale = 0.2;
 
-			scene.add(modelData);
+			scene5.add(modelData);
+			animatedModel = &modelData;
 
 			for_each(modelData.meshes.begin(), modelData.meshes.end(), [&](OglObject3D::Mesh& mesh) {
 
@@ -229,7 +243,7 @@ int main() {
 
 		});
 
-		*/
+		
 
 	
 
@@ -254,20 +268,25 @@ int main() {
 		OglObject3D::InstancedAttribute instanceAttributeNew(instanceMatrices);
 		for_each(meshList.begin(), meshList.end(), [&](OglObject3D::Mesh& mesh) {
 
+			mesh.ResetBuffers();
 			mesh.geometry->setInstanceCount(instanceCount);
 			mesh.geometry->setInstancedAttribute("instanceMatrix", instanceAttributeNew);
 			});
+
+
 	};
 
 
-	scene.add(dirLight1);
-	//scene.add(box1);
-	//scene.add(box2);
-	scene.add(box3);
+	scene1.add(dirLight1);
+	scene2.add(dirLight1);
+	scene3.add(dirLight1);
+	scene4.add(dirLight1);
+	scene5.add(dirLight1);
+
 
 
 	OglPostProcessing::EffectComposer composer(&renderer);
-	OglPostProcessing::WeightedBlendedRenderPass weightBlendedPass(scene, perspectiveCamera);
+	OglPostProcessing::WeightedBlendedRenderPass weightBlendedPass(scene1, perspectiveCamera);
 
 	composer.AddPass(&weightBlendedPass);
 
@@ -277,11 +296,55 @@ int main() {
 	bool pauseAnimation = false;
 
 
+	gui.addSeperator("Directional Light");
+
+
 	gui.add("dirLight x", &dirLight1.WorldDirection.x, -1.0f, 1.0f);
 	gui.add("dirLight y", &dirLight1.WorldDirection.y, -1.0f, 1.0f);
 	gui.add("dirLight z", &dirLight1.WorldDirection.z, -1.0f, 1.0f);
 
-	gui.add("grid size", &gridSize, 5, 30);
+	gui.addSeperator("Grid Properties");
+
+	gui.add("grid size", &gridSize, 5, 30).onChange(UpdateParameters);
+	gui.add("grid length", &gridLength, 5.0f, 20.0f).onChange(UpdateParameters);
+
+
+	float scale = 1.0f;
+	gui.addSeperator("Mesh Scale");
+	gui.add("scale", &scale, 0.1f, 10.0f).onChange([&]() {
+
+		box1.scale = MyVectorV3::Vector3f(scale, scale, scale);
+		box2.scale = MyVectorV3::Vector3f(scale, scale, scale);
+		box3.scale = MyVectorV3::Vector3f(scale, scale, scale);
+
+		staticModel->scale= MyVectorV3::Vector3f(scale, scale, scale);
+		animatedModel->scale = MyVectorV3::Vector3f(scale, scale, scale);
+
+
+		});
+
+
+	vector<string> options{ "scene1","scene2","scene3","scene4","scene5"};
+	gui.add("Choose Scene", options).onChange([&](string option) {
+	
+		if (option == "scene1") {
+			weightBlendedPass.SetActiveScene(scene1);
+		}
+		else if (option == "scene2") {
+			weightBlendedPass.SetActiveScene(scene2);
+		}
+		else if (option == "scene3") {
+			weightBlendedPass.SetActiveScene(scene3);
+		}
+		else if (option == "scene4") {
+			weightBlendedPass.SetActiveScene(scene4);
+		}
+		else if (option == "scene5") {
+			weightBlendedPass.SetActiveScene(scene5);
+		}
+		});
+
+	
 
 	long long lastTime = OglAssimp::GetCurrentTimeAsMilliseconds();
 	while (!glfwWindowShouldClose(OglWindow::Window::glfwWindow))
@@ -298,7 +361,7 @@ int main() {
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-
+		//
 		long long  currentTime = OglAssimp::GetCurrentTimeAsMilliseconds();
 		long long deltaTime = currentTime - lastTime;
 		lastTime = currentTime;

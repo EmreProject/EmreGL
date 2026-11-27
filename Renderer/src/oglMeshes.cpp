@@ -2443,6 +2443,19 @@ namespace OglObject3D {
 		shadowMapMaterialPointLight.Compile(this->geometry);
 
 	}
+
+	void Mesh::ResetBuffers() {
+
+		if (this->isLoaded_) {
+
+		this->isLoaded_ = false;
+		glDeleteVertexArrays(1, &VAO);
+
+		int bufferNumber = geometry->getBufferNumber() + 1;
+		glDeleteBuffers(bufferNumber, this->m_Buffers);
+		}
+	}
+
 	void Mesh::LoadMesh() {
 
 		this->isLoaded_ = true;

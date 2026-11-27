@@ -8,7 +8,9 @@ using namespace std;
 
 
 namespace DAT {
-
+	
+	template <typename T>
+	concept Number = std::integral<T> || std::floating_point<T>;
 
 
 	class Gui {
@@ -30,10 +32,10 @@ namespace DAT {
 		Gui(float width);
 		Gui(float width,float x,float y);
 
-		
-		ImguiItems::SliderItem& add(string name,float * number,float  min,float  max, int digitAfterDot=5) {
+		template<Number t>
+		ImguiItems::SliderItem<t>& add(string name,t * number,t  min,t max, int digitAfterDot=5) {
 
-			ImguiItems::SliderItem* item = new ImguiItems::SliderItem(name, number, min, max, digitAfterDot);
+			ImguiItems::SliderItem<t>* item = new ImguiItems::SliderItem(name, number, min, max, digitAfterDot);
 			items.insert(items.end(),item );
 
 			return *item;
@@ -49,7 +51,7 @@ namespace DAT {
 			return *item;
 		}
 
-		ImguiItems::DropdownItem& add(string name, vector<const char*> options_) {
+		ImguiItems::DropdownItem& add(string name, vector<string> options_) {
 
 			ImguiItems::DropdownItem* item = new ImguiItems::DropdownItem(name, options_);
 			items.insert(items.end(), item);
@@ -57,12 +59,26 @@ namespace DAT {
 			return *item;
 		}
 
+
+		ImguiItems::ButtonItem& add(string name,function<void()> clickFunc) {
+			ImguiItems::ButtonItem* item = new ImguiItems::ButtonItem(name);
+			item->clickFunction = clickFunc;
+			items.insert(items.end(), item);
+			return *item;
+		}
+
+
 		ImguiItems::FolderItem& addFolder(string name) {
 			ImguiItems::FolderItem* item = new ImguiItems::FolderItem(name);
 			items.insert(items.end(), item);
 			return *item;
 		}
 
+		ImguiItems::SeperatorItem& addSeperator(string name) {
+			ImguiItems::SeperatorItem* item = new ImguiItems::SeperatorItem(name);
+			items.insert(items.end(), item);
+			return *item;
+		}
 
 		void setWindowSize(int width, int height);
 		void GetSizeandPosition(float* x, float* y, float* width, float* height);
